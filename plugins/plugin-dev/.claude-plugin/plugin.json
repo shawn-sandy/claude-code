@@ -1,0 +1,13 @@
+{
+  "name": "plugin-dev",
+  "version": "1.0.0",
+  "description": "Plugin development toolkit with skills and utilities for creating, scaffolding, and managing Claude Code plugins",
+  "author": {
+    "name": "Shawn Sandy",
+    "email": "shawn@example.com"
+  },
+  "homepage": "https://github.com/shawnsandy/claude-code",
+  "repository": "https://github.com/shawnsandy/claude-code",
+  "license": "MIT",
+  "keywords": ["plugin", "development", "toolkit", "scaffold", "setup", "creator"]
+}
