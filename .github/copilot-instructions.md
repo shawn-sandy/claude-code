@@ -4,43 +4,59 @@
 
 ## Project Overview
 
-This is a **multi-plugin marketplace** for Claude Code, distributing plugins with commands, skills, agents, hooks, and MCP integrations. The architecture uses:
-- **Marketplace catalog** (`.claude-plugin/marketplace.json`) listing all plugins
-- **Plugin manifests** (`plugins/*/. claude-plugin/plugin.json`) for individual plugins
+This is a **multi-plugin marketplace** for Claude Code, distributing plugins
+with commands, skills, agents, hooks, and MCP integrations. The architecture
+uses:
+
+- **Marketplace catalog** (`.claude-plugin/marketplace.json`) listing all
+  plugins
+- **Plugin manifests** (`plugins/*/. claude-plugin/plugin.json`) for individual
+  plugins
 - **Auto-discovery** of components in standardized directories
 
 ## Critical Architecture Patterns
 
 ### OpenSpec Workflow (MUST FOLLOW)
+
 Before implementing ANY feature, breaking change, or architecture shift:
+
 1. **Check existing work**: Run `openspec list` and `openspec list --specs`
-2. **Read context**: Review [openspec/AGENTS.md](openspec/AGENTS.md) for the complete workflow
-3. **Create proposal**: Use `openspec` to scaffold `proposal.md`, `tasks.md`, and spec deltas
+2. **Read context**: Review [openspec/AGENTS.md](openspec/AGENTS.md) for the
+   complete workflow
+3. **Create proposal**: Use `openspec` to scaffold `proposal.md`, `tasks.md`,
+   and spec deltas
 4. **Validate**: Run `openspec validate <change-id> --strict` before sharing
 5. **Wait for approval**: Do NOT implement until proposal is reviewed
 
-Skip proposals only for: bug fixes, typos, comments, dependency updates, config tweaks.
+Skip proposals only for: bug fixes, typos, comments, dependency updates, config
+tweaks.
 
-Triggers requiring proposals (examples from [openspec/AGENTS.md](openspec/AGENTS.md)):
+Triggers requiring proposals (examples from
+[openspec/AGENTS.md](openspec/AGENTS.md)):
+
 - Words like "proposal", "spec", "change", "plan" + "create", "help", "make"
-- New features, breaking changes, architecture changes, performance optimizations
+- New features, breaking changes, architecture changes, performance
+  optimizations
 
 ### Component Discovery & Naming
 
 **Standard directories** (auto-discovered by Claude Code):
+
 - `commands/*.md` → Slash commands (filename = command name)
 - `skills/*/SKILL.md` → Autonomous skills (directory = skill name)
-- `agents/*.md` → Specialized agents (filename = agent name)  
+- `agents/*.md` → Specialized agents (filename = agent name)
 - `hooks/hooks.json` → Event-driven automation
 - `.mcp.json` → Model Context Protocol servers
 
 **Naming convention**: All names use `kebab-case` (lowercase with hyphens)
 
-**CRITICAL**: Component directories MUST be at plugin root, NOT inside `.claude-plugin/`
+**CRITICAL**: Component directories MUST be at plugin root, NOT inside
+`.claude-plugin/`
 
 ### Path Management
 
 **Always use plugin-relative paths** in hooks and MCP configurations:
+
 ```json
 // hooks.json
 "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/example-hook.sh"
@@ -55,6 +71,7 @@ Other path variables: `${CLAUDE_PROJECT_DIR}`, `${VAR:-default}`
 ## Component Types & When to Use Each
 
 ### Commands (User-Invoked)
+
 **Use for**: Builds, deployments, git operations, user-triggered workflows  
 **Structure**: `commands/command-name.md` with YAML frontmatter
 
@@ -62,12 +79,13 @@ Other path variables: `${CLAUDE_PROJECT_DIR}`, `${VAR:-default}`
 ---
 description: Brief command description (1-2 sentences)
 argument-hint: [optional-args]
-allowed-tools: Bash(git:*), Read, Write  # Restrict tools for security
+allowed-tools: Bash(git:*), Read, Write # Restrict tools for security
 model: claude-3-5-sonnet-20241022
 ---
 ```
 
 ### Skills (Autonomously Triggered)
+
 **Use for**: Capabilities that enhance Claude without user invocation  
 **Structure**: `skills/skill-name/SKILL.md` with frontmatter
 
@@ -79,9 +97,11 @@ allowed-tools: Read, Grep, Glob
 ---
 ```
 
-**CRITICAL**: `description` must include "when to use" triggers for Claude to know when to invoke
+**CRITICAL**: `description` must include "when to use" triggers for Claude to
+know when to invoke
 
 ### Agents (Specialized Subagents)
+
 **Use for**: Complex multi-step tasks requiring isolation and domain expertise  
 **Structure**: `agents/agent-name.md` with frontmatter + system prompt
 
@@ -89,27 +109,35 @@ allowed-tools: Read, Grep, Glob
 ---
 name: agent-name
 description: Purpose and when Claude should use this agent
-tools: Read, Write, Bash  # Restrict tools (omit for all)
-model: inherit  # inherit, sonnet, opus, haiku
-permissionMode: auto  # auto, ask, block
+tools: Read, Write, Bash # Restrict tools (omit for all)
+model: inherit # inherit, sonnet, opus, haiku
+permissionMode: auto # auto, ask, block
 ---
 ```
 
 ### Hooks (Event-Driven)
+
 **Use for**: Validation, logging, enforcing best practices  
 **Types**: `prompt` (inject instructions) or `command` (execute scripts)  
-**Events**: `PreToolUse`, `PostToolUse`, `SessionStart`, `UserPromptSubmit`, etc.
+**Events**: `PreToolUse`, `PostToolUse`, `SessionStart`, `UserPromptSubmit`,
+etc.
 
-Example from [plugins/starter-plugin/hooks/hooks.json](plugins/starter-plugin/hooks/hooks.json):
+Example from
+[plugins/starter-plugin/hooks/hooks.json](plugins/starter-plugin/hooks/hooks.json):
+
 ```json
 {
-  "PreToolUse": [{
-    "matcher": "Write|Edit",
-    "hooks": [{
-      "type": "prompt",
-      "prompt": "Read existing content before editing"
-    }]
-  }]
+  "PreToolUse": [
+    {
+      "matcher": "Write|Edit",
+      "hooks": [
+        {
+          "type": "prompt",
+          "prompt": "Read existing content before editing"
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -136,7 +164,9 @@ Example from [plugins/starter-plugin/hooks/hooks.json](plugins/starter-plugin/ho
 
 ### Required Plugin Manifest Fields
 
-From [plugins/starter-plugin/.claude-plugin/plugin.json](plugins/starter-plugin/.claude-plugin/plugin.json):
+From
+[plugins/starter-plugin/.claude-plugin/plugin.json](plugins/starter-plugin/.claude-plugin/plugin.json):
+
 ```json
 {
   "name": "plugin-name",
@@ -153,34 +183,47 @@ From [plugins/starter-plugin/.claude-plugin/plugin.json](plugins/starter-plugin/
 ## Key Files & References
 
 - [AGENTS.md](AGENTS.md) - OpenSpec managed instructions (DO NOT EDIT)
-- [openspec/AGENTS.md](openspec/AGENTS.md) - Complete OpenSpec workflow and CLI commands
+- [openspec/AGENTS.md](openspec/AGENTS.md) - Complete OpenSpec workflow and CLI
+  commands
 - [CLAUDE.md](CLAUDE.md) - Detailed component architecture and patterns
-- [CONTRIBUTING.md](CONTRIBUTING.md) - Full contribution guidelines with examples
+- [CONTRIBUTING.md](CONTRIBUTING.md) - Full contribution guidelines with
+  examples
 - [README.md](README.md) - User-facing documentation
-- [.claude-plugin/marketplace.json](.claude-plugin/marketplace.json) - Marketplace catalog
+- [.claude-plugin/marketplace.json](.claude-plugin/marketplace.json) -
+  Marketplace catalog
 
 ## Common Patterns from starter-plugin
 
-**Command example**: [plugins/starter-plugin/commands/example.md](plugins/starter-plugin/commands/example.md)
+**Command example**:
+[plugins/starter-plugin/commands/example.md](plugins/starter-plugin/commands/example.md)
+
 - Shows frontmatter structure with `allowed-tools` restriction
 - Documents when to use commands vs skills vs agents
 
-**Skill example**: [plugins/starter-plugin/skills/example-skill/SKILL.md](plugins/starter-plugin/skills/example-skill/SKILL.md)
+**Skill example**:
+[plugins/starter-plugin/skills/example-skill/SKILL.md](plugins/starter-plugin/skills/example-skill/SKILL.md)
+
 - Demonstrates critical "when to use" description pattern
 - Shows supporting files in skill directory
 
-**Agent example**: [plugins/starter-plugin/agents/example-agent.md](plugins/starter-plugin/agents/example-agent.md)
+**Agent example**:
+[plugins/starter-plugin/agents/example-agent.md](plugins/starter-plugin/agents/example-agent.md)
+
 - System prompt structure for specialized tasks
 - Tool restriction and permission configuration
 
-**Hooks example**: [plugins/starter-plugin/hooks/hooks.json](plugins/starter-plugin/hooks/hooks.json)
+**Hooks example**:
+[plugins/starter-plugin/hooks/hooks.json](plugins/starter-plugin/hooks/hooks.json)
+
 - Event-driven validation patterns
 - Path variable usage with `${CLAUDE_PLUGIN_ROOT}`
 
 ## Critical Constraints
 
-1. **Never edit OPENSPEC managed blocks** - Look for `<!-- OPENSPEC:START -->` comments
-2. **Always validate OpenSpec changes** - Run `openspec validate --strict` before committing
+1. **Never edit OPENSPEC managed blocks** - Look for `<!-- OPENSPEC:START -->`
+   comments
+2. **Always validate OpenSpec changes** - Run `openspec validate --strict`
+   before committing
 3. **Follow naming conventions** - All component names must be kebab-case
 4. **Use path variables** - Never hardcode absolute paths in plugin configs
 5. **Test locally first** - Use local marketplace path before pushing changes
