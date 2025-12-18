@@ -193,6 +193,96 @@ When this skill is invoked:
 
 Write to: `plugins/[plugin-name]/skills/example-skill/SKILL.md`
 
+**Ask about README Generation:**
+
+Use AskUserQuestion to ask if skill should include README:
+```
+Question: "Would you like to include a README.md for this skill?"
+Header: "Skill README"
+Options:
+- "Yes - Include comprehensive README.md"
+- "No - SKILL.md only (suitable for simple skills)"
+Instructions:
+- README recommended for skills with multiple features or configuration
+- README provides user-facing documentation separate from system prompt
+- Simple, single-purpose skills may not need separate README
+```
+
+If user selects "Yes", create README.md adapted from template:
+```markdown
+# Example Skill for [Plugin Name]
+
+Brief overview of what this skill does and its purpose.
+
+## When This Skill Activates
+
+Claude automatically invokes this skill when you:
+- Say "[trigger phrase 1]"
+- Mention "[keyword 1]", "[keyword 2]"
+- Request help with [specific task]
+
+## Features
+
+- Feature 1: [Description based on skill purpose]
+- Feature 2: [Description]
+- Feature 3: [Description]
+
+## Usage Examples
+
+### Example 1: [Scenario Name]
+
+\`\`\`
+You: "[Example user request]"
+
+Claude: [What the skill does in this scenario]
+\`\`\`
+
+### Example 2: [Another Scenario]
+
+\`\`\`
+You: "[Another example]"
+
+Claude: [Expected behavior]
+\`\`\`
+
+## Allowed Tools
+
+This skill uses these tools:
+- \`Read\` - [Purpose for this skill]
+- \`Grep\` - [Purpose for this skill]
+- \`Glob\` - [Purpose for this skill]
+
+## Configuration
+
+[Document any configuration options, or note "No configuration required"]
+
+## Troubleshooting
+
+### Issue: Skill Not Triggering
+
+**Problem**: The skill doesn't activate when expected
+
+**Solutions**:
+- Verify plugin is installed: \`/plugin list\`
+- Check trigger keywords match your request
+- Try more explicit phrases from "When This Skill Activates" section
+
+## Related Documentation
+
+- [Official Plugin Reference](https://code.claude.com/docs/en/plugins-reference)
+- [Starter Plugin Examples](../../../plugins/starter-plugin/)
+- [Project CLAUDE.md](../../../CLAUDE.md)
+
+## Version History
+
+### v1.0.0 (YYYY-MM-DD)
+- Initial release
+- [Key feature 1]
+- [Key feature 2]
+```
+
+Write to: `plugins/[plugin-name]/skills/example-skill/README.md`
+
 #### If "Agents" Selected:
 ```bash
 mkdir -p plugins/[plugin-name]/agents

@@ -62,6 +62,7 @@ Claude Code automatically discovers components in standard directories:
 - Use for: Capabilities that enhance Claude's abilities without user invocation
 - **Critical**: Description must include BOTH "what it does" AND "when to use it"
 - Supporting files can live in the skill's directory
+- **Best Practice**: Include `README.md` for complex skills with multiple features or configuration options
 
 **Agents** (`agents/*.md`):
 - Launched via Task tool for complex, isolated tasks
@@ -456,6 +457,41 @@ Each plugin should document:
 # Environment: TOOL_NAME, TOOL_INPUT, CLAUDE_PLUGIN_ROOT
 # Exit: 0=allow, 1=block
 ```
+
+**Skill README Best Practices:**
+
+For complex skills with multiple features, include a `README.md` in the skill directory. This separates user-facing documentation from the system prompt (`SKILL.md`).
+
+**When to Include README:**
+- Skill has multiple capabilities or features
+- Configuration options available
+- Complex usage patterns or workflows
+- Troubleshooting steps frequently needed
+- Public/marketplace distribution
+
+**When README is Optional:**
+- Simple, single-purpose skills
+- Self-documenting functionality
+- Internal/private use only
+- Obvious from SKILL.md content
+
+**Template Structure:**
+```markdown
+# Skill Name
+## When This Skill Activates
+## Features
+## Usage Examples
+## Configuration
+## Allowed Tools
+## Troubleshooting
+## Version History
+```
+
+See `templates/skill-readme-template.md` for comprehensive template with inline comments and guidance.
+
+**Examples:**
+- `plugins/plugin-dev/skills/plugin-setup/README.md` - Comprehensive example
+- `plugins/starter-plugin/skills/example-skill/README.md` - Reference implementation
 
 ## Troubleshooting
 
