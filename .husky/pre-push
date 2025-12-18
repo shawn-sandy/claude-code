@@ -1,0 +1,101 @@
+#!/bin/bash
+
+# Husky pre-push hook
+# Runs OpenSpec validation and security checks before pushing
+
+echo "🔍 Running pre-push validation..."
+
+# Get list of files being pushed (compare with remote main)
+FILES_TO_PUSH=$(git diff --name-only origin/main..HEAD 2>/dev/null || git diff --name-only HEAD)
+
+if [ -z "$FILES_TO_PUSH" ]; then
+  echo "✅ No new changes to push"
+  exit 0
+fi
+
+# OpenSpec validation
+if echo "$FILES_TO_PUSH" | grep -q "openspec/"; then
+  echo "📋 OpenSpec files changed, running validation..."
+
+  if command -v openspec >/dev/null 2>&1; then
+    # Check if there are any active changes
+    ACTIVE_CHANGES=$(openspec list 2>/dev/null | grep -v "No changes found" | wc -l)
+
+    if [ "$ACTIVE_CHANGES" -gt 0 ]; then
+      echo "   Validating OpenSpec changes..."
+      if ! openspec validate --strict 2>&1; then
+        echo ""
+        echo "❌ OpenSpec validation failed"
+        echo "   Fix validation errors before pushing"
+        echo "   Run: openspec validate --strict"
+        exit 1
+      fi
+      echo "   ✓ OpenSpec validation passed"
+    else
+      echo "   No active OpenSpec changes to validate"
+    fi
+  else
+    echo "   ⚠️  Warning: openspec CLI not found, skipping validation"
+    echo "   Install from: https://github.com/openspec/openspec"
+  fi
+fi
+
+# Check for secrets
+echo "🔒 Scanning for potential secrets..."
+SECRET_PATTERNS="(api[_-]?key|password|secret|token|access[_-]?key|private[_-]?key|bearer).*[=:]['\"]?[a-zA-Z0-9]{20,}['\"]?"
+
+SECRET_FOUND=0
+while IFS= read -r file; do
+  if [ -f "$file" ] && ! echo "$file" | grep -q "\.git/"; then
+    if grep -iE "$SECRET_PATTERNS" "$file" >/dev/null 2>&1; then
+      echo "   ⚠️  Potential secret detected in: $file"
+      grep -iE "$SECRET_PATTERNS" "$file" | head -3
+      SECRET_FOUND=1
+    fi
+  fi
+done <<< "$FILES_TO_PUSH"
+
+if [ $SECRET_FOUND -eq 1 ]; then
+  echo ""
+  echo "❌ Potential secrets detected in code"
+  echo "   Review the files above and remove sensitive data"
+  echo "   Use environment variables instead"
+  echo ""
+  echo "   If this is a false positive, use: git push --no-verify"
+  exit 1
+fi
+
+# Validate marketplace.json consistency
+if echo "$FILES_TO_PUSH" | grep -q "marketplace.json\|plugin.json"; then
+  echo "🏪 Validating marketplace catalog consistency..."
+
+  if [ -f ".claude-plugin/marketplace.json" ]; then
+    PLUGIN_NAMES=$(jq -r '.plugins[].name' .claude-plugin/marketplace.json 2>/dev/null)
+
+    if [ -n "$PLUGIN_NAMES" ]; then
+      MISSING_PLUGINS=0
+      while IFS= read -r plugin; do
+        if [ ! -d "plugins/$plugin" ]; then
+          echo "   ❌ Plugin directory missing: plugins/$plugin"
+          MISSING_PLUGINS=$((MISSING_PLUGINS + 1))
+        elif [ ! -f "plugins/$plugin/.claude-plugin/plugin.json" ]; then
+          echo "   ❌ Plugin manifest missing: plugins/$plugin/.claude-plugin/plugin.json"
+          MISSING_PLUGINS=$((MISSING_PLUGINS + 1))
+        else
+          echo "   ✓ Plugin '$plugin' structure valid"
+        fi
+      done <<< "$PLUGIN_NAMES"
+
+      if [ $MISSING_PLUGINS -gt 0 ]; then
+        echo ""
+        echo "❌ Marketplace catalog inconsistent"
+        echo "   Fix plugin structure before pushing"
+        exit 1
+      fi
+    fi
+  fi
+fi
+
+echo ""
+echo "✅ Pre-push validation passed"
+exit 0

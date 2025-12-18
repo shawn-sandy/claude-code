@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# Husky prepare-commit-msg hook
+# Adds helpful commit message template for new commits
+
+COMMIT_MSG_FILE=$1
+COMMIT_SOURCE=$2
+
+# Only add template for regular commits (not merge, squash, amend, etc.)
+if [ -z "$COMMIT_SOURCE" ] || [ "$COMMIT_SOURCE" = "message" ]; then
+
+  # Check if commit message is empty or only contains comments
+  if ! grep -q "^[^#]" "$COMMIT_MSG_FILE" 2>/dev/null; then
+
+    # Add helpful template
+    cat > "$COMMIT_MSG_FILE" <<'EOF'
+# <type>: <description>
+#
+# Types:
+#   feat     - New feature
+#   fix      - Bug fix
+#   docs     - Documentation changes
+#   style    - Code style changes
+#   refactor - Code refactoring
+#   perf     - Performance improvements
+#   test     - Adding or updating tests
+#   chore    - Maintenance tasks
+#   add      - Adding new content
+#   update   - Updating existing content
+#   remove   - Removing content
+#   enhance  - Enhancing features
+#   improve  - Improving code/features
+#
+# Examples:
+#   docs: update README with installation steps
+#   feat(plugins): add new testing plugin
+#   fix: resolve JSON validation issue
+#
+# Guidelines:
+#   - Use present tense ("add" not "added")
+#   - Keep first line under 72 characters
+#   - Separate body with blank line if needed
+#   - Reference issues/PRs in body if relevant
+#
+# Remove these comment lines before committing
+EOF
+
+  fi
+fi
+
+exit 0
