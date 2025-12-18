@@ -92,6 +92,36 @@ A comprehensive example plugin demonstrating all Claude Code component types wit
 # Try asking: "Use the example-agent to explain agents"
 ```
 
+### plugin-dev
+
+Plugin development toolkit with interactive skills for creating, scaffolding, and managing Claude Code plugins.
+
+**Components:**
+- **Skills**:
+  - `plugin-setup` - Interactive plugin scaffolding with comprehensive validation
+
+**Install:**
+```bash
+/plugin install plugin-dev@claude-code-marketplace
+```
+
+**Usage Examples:**
+```bash
+# The plugin-setup skill triggers automatically when you say:
+"Create a new plugin"
+"Setup a plugin"
+"Add a skill to my plugin"
+"Create a command"
+
+# The skill will guide you through:
+# 1. Gathering plugin requirements
+# 2. Creating proper directory structure
+# 3. Generating component templates
+# 4. Updating marketplace catalog
+# 5. Running comprehensive validation
+# 6. Providing local testing instructions
+```
+
 ## Plugin Components Explained
 
 ### Commands (Slash Commands)
