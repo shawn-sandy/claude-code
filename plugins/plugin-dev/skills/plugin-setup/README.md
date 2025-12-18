@@ -94,6 +94,16 @@ Uses `starter-plugin` as reference to create:
 - Security patterns (tool restrictions)
 - Educational inline comments
 
+### Optional README Generation for Skills
+
+Asks whether to include README.md for skills:
+- Interactive question: "Include README.md for this skill?"
+- Generated README includes: activation triggers, features, usage examples, troubleshooting
+- Template based on best practices from `templates/skill-readme-template.md`
+- Separates user-facing documentation from system prompt (SKILL.md)
+- Recommended for complex skills, optional for simple ones
+- Example READMEs: `plugin-setup` and `example-skill`
+
 ### Automated Marketplace Integration
 
 Handles all marketplace tasks:
@@ -156,6 +166,26 @@ You: "Create a plugin called 'my-tools' with commands, skills, and hooks"
 Claude: Creating 'my-tools' plugin with commands, skills, and hooks...
 
 [Asks for metadata, creates all selected components, validates]
+```
+
+### Creating a Skill with README Documentation
+
+```
+You: "Add a skill to my code-tools plugin"
+
+Claude: I'll add a skill to your code-tools plugin.
+
+[Creates SKILL.md]
+
+Claude: Would you like to include a README.md for this skill?
+
+You: "Yes, include README"
+
+Claude: Creating comprehensive README with usage examples, troubleshooting, and documentation...
+
+[Generates README.md from template]
+
+Claude: Skill created with both SKILL.md and README.md. The README provides user-facing documentation while SKILL.md contains the system prompt.
 ```
 
 ## Component Templates

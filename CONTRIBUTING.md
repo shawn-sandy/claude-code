@@ -140,6 +140,81 @@ Detailed implementation guidance
 - Keep skills focused on one capability
 - Use read-only tools when possible
 
+**Documentation Best Practices:**
+
+For skills with complex functionality, include a `README.md` in the skill directory:
+
+```markdown
+# Skill Name
+
+Brief overview of what the skill does.
+
+## When This Skill Activates
+
+List trigger keywords and conditions:
+- "trigger phrase 1"
+- "trigger phrase 2"
+- User scenario that activates skill
+
+## Features
+
+Key capabilities:
+- Feature 1: Description
+- Feature 2: Description
+
+## Usage Examples
+
+### Example 1: Scenario Name
+
+\`\`\`
+User: "[Example request]"
+
+Claude: [What the skill does]
+\`\`\`
+
+## Configuration
+
+Any customization options or settings.
+
+## Allowed Tools
+
+- Tool1: Purpose
+- Tool2: Purpose
+
+## Troubleshooting
+
+### Common Issue
+
+**Problem**: Description
+
+**Solutions**:
+- Solution 1
+- Solution 2
+
+## Version History
+
+### v1.0.0 (YYYY-MM-DD)
+- Initial release
+```
+
+**When to Include README:**
+- Skill has multiple capabilities
+- Configuration options available
+- Complex usage patterns
+- Troubleshooting steps needed
+- Public/marketplace distribution
+
+**When README is Optional:**
+- Simple, single-purpose skills
+- Self-documenting from SKILL.md
+- Internal/private use only
+
+**Template:** See `templates/skill-readme-template.md` for comprehensive template with inline guidance.
+
+**Examples:**
+- `plugins/plugin-dev/skills/plugin-setup/README.md` - Comprehensive documentation
+- `plugins/starter-plugin/skills/example-skill/README.md` - Reference implementation
+
 ### Agents
 
 **Location:** `agents/agent-name.md`

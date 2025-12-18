@@ -142,6 +142,8 @@ Autonomously triggered capabilities that enhance Claude's abilities. Perfect for
 
 **Structure:** `skills/skill-name/SKILL.md` with YAML frontmatter
 
+**Best Practice:** Complex skills should include `README.md` for user documentation separate from the system prompt. See `templates/skill-readme-template.md` for template.
+
 ### Agents
 Specialized subagents for complex, domain-specific tasks. Perfect for:
 - Code reviews
