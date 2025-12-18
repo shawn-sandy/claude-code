@@ -1,0 +1,13 @@
+{
+  "name": "starter-plugin",
+  "version": "1.0.0",
+  "description": "Example plugin demonstrating all Claude Code component types: commands, skills, agents, hooks, and MCP configuration",
+  "author": {
+    "name": "Shawn Sandy",
+    "email": "shawn@example.com"
+  },
+  "homepage": "https://github.com/shawnsandy/claude-code",
+  "repository": "https://github.com/shawnsandy/claude-code",
+  "license": "MIT",
+  "keywords": ["example", "starter", "template", "tutorial", "reference"]
+}

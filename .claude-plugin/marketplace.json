@@ -1,0 +1,18 @@
+{
+  "name": "claude-code-marketplace",
+  "description": "Collection of Claude Code plugins, commands, skills, and agents for enhancing development workflows",
+  "version": "1.0.0",
+  "owner": {
+    "name": "Shawn Sandy",
+    "email": "shawn@example.com"
+  },
+  "pluginRoot": "./plugins",
+  "plugins": [
+    {
+      "name": "starter-plugin",
+      "source": "./plugins/starter-plugin",
+      "description": "Example plugin demonstrating all component types: commands, skills, agents, hooks, and MCP configuration",
+      "version": "1.0.0"
+    }
+  ]
+}

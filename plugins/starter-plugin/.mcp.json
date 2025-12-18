@@ -1,0 +1,50 @@
+{
+  "_comment": "MCP (Model Context Protocol) server configurations",
+  "_documentation": "https://modelcontextprotocol.io",
+  "_usage": "Define external service integrations that provide additional tools and resources to Claude",
+
+  "_example_stdio_server": {
+    "_description": "Example stdio transport MCP server",
+    "command": "${CLAUDE_PLUGIN_ROOT}/servers/example-server",
+    "args": ["--config", "${CLAUDE_PLUGIN_ROOT}/config/server-config.json"],
+    "env": {
+      "API_KEY": "${API_KEY}",
+      "TIMEOUT": "${TIMEOUT:-30}",
+      "LOG_LEVEL": "${LOG_LEVEL:-info}"
+    }
+  },
+
+  "_example_sse_server": {
+    "_description": "Example Server-Sent Events (SSE) transport",
+    "transport": "sse",
+    "url": "http://localhost:3000/sse",
+    "env": {
+      "AUTH_TOKEN": "${AUTH_TOKEN}"
+    }
+  },
+
+  "_example_http_server": {
+    "_description": "Example HTTP transport",
+    "transport": "http",
+    "url": "http://localhost:8080/mcp",
+    "headers": {
+      "Authorization": "Bearer ${API_TOKEN}",
+      "X-Custom-Header": "value"
+    }
+  },
+
+  "_path_variables": {
+    "_description": "Available path variables for use in configurations",
+    "CLAUDE_PLUGIN_ROOT": "Absolute path to this plugin's root directory",
+    "CLAUDE_PROJECT_DIR": "Absolute path to the current project directory",
+    "CUSTOM_VAR": "Environment variables with optional defaults: ${VAR:-default}"
+  },
+
+  "_getting_started": {
+    "_step_1": "Remove the underscore prefixes from example configurations to activate them",
+    "_step_2": "Update command paths to point to your actual MCP server executables",
+    "_step_3": "Configure environment variables in your shell or .env file",
+    "_step_4": "Test your MCP server independently before integrating with Claude Code",
+    "_step_5": "Refer to https://modelcontextprotocol.io for MCP server development guides"
+  }
+}

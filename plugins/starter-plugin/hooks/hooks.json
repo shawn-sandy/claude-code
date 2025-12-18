@@ -1,0 +1,60 @@
+{
+  "description": "Example hooks demonstrating event-driven automation and validation",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Before writing or editing files, ensure you've read the existing content first to understand the context and avoid unintended changes."
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "When using Bash commands, verify that the command is safe and necessary. Prefer using specialized tools (Read, Edit, Write, Grep, Glob) over bash commands for file operations."
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/example-hook.sh",
+            "args": ["${TOOL_NAME}", "${TOOL_INPUT}"],
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Session started with starter-plugin loaded. Example hooks are active for PreToolUse and PostToolUse events."
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "User prompt received. Remember to follow best practices and use appropriate tools for each task."
+          }
+        ]
+      }
+    ]
+  }
+}
