@@ -20,6 +20,18 @@ Automatically invoke this skill when the user:
 - Asks about plugin development or structure
 - Needs help with Claude Code plugin components
 
+## Documentation Reference
+
+**For comprehensive educational content, refer users to**: `plugins/plugin-dev/skills/plugin-setup/README.md`
+
+README contains:
+- Educational Insights (component structure, skill descriptions, path variables, hooks, security)
+- Implementation Details (template adaptation, validation strategy, marketplace integration)
+- Performance Notes (token efficiency, validation performance)
+- Troubleshooting (common issues and solutions)
+
+This SKILL.md focuses on **execution workflow** while README provides **user education**.
+
 ## Workflow Overview
 
 This skill follows a 6-phase workflow:
@@ -119,378 +131,97 @@ Write to: `plugins/[plugin-name]/.claude-plugin/plugin.json`
 For each selected component type, create appropriate structure:
 
 #### If "Commands" Selected:
-```bash
-mkdir -p plugins/[plugin-name]/commands
-```
 
-Read starter example:
-```bash
-Read: plugins/starter-plugin/commands/example.md
-```
-
-Create example command file adapted for the new plugin:
-```markdown
----
-description: Example command for [plugin-name]
-argument-hint: [optional-message]
-allowed-tools: Read, Write, Bash(git:*)
----
-
-# Example Command for [Plugin Name]
-
-This is an example command. When a user types /example-command, this markdown content becomes the prompt.
-
-## What to do:
-1. [Customize instructions for your command]
-2. [Add specific steps]
-3. [Define expected behavior]
-
-## Example Usage:
-/example-command [arguments]
-```
-
-Write to: `plugins/[plugin-name]/commands/example-command.md`
+1. Create directory: `mkdir -p plugins/[plugin-name]/commands`
+2. Read starter template: `plugins/starter-plugin/commands/example.md`
+3. Adapt template with:
+   - Update `description` to match plugin purpose
+   - Customize `argument-hint` if command accepts parameters
+   - Set `allowed-tools` based on security requirements
+   - Replace example content with plugin-specific instructions
+   - Add usage examples relevant to this command
+4. Write to: `plugins/[plugin-name]/commands/example-command.md`
 
 #### If "Skills" Selected:
-```bash
-mkdir -p plugins/[plugin-name]/skills/example-skill
-```
 
-Read starter example:
-```bash
-Read: plugins/starter-plugin/skills/example-skill/SKILL.md
-```
+1. Create directory: `mkdir -p plugins/[plugin-name]/skills/example-skill`
+2. Read starter template: `plugins/starter-plugin/skills/example-skill/SKILL.md`
+3. Adapt SKILL.md with:
+   - Update `name` to match skill name
+   - Update `description` with WHAT it does AND WHEN to use (critical for triggering)
+   - Set `allowed-tools` based on security requirements
+   - Customize purpose and instructions for the plugin
+   - Add specific trigger keywords and scenarios
+4. Write to: `plugins/[plugin-name]/skills/example-skill/SKILL.md`
 
-Create example skill adapted for the new plugin:
-```markdown
----
-name: example-skill
-description: Example skill for [plugin-name]. Use this skill when user asks about [trigger keywords] or mentions [specific use cases].
-allowed-tools: Read, Grep, Glob
----
+**Optional README for Skills:**
 
-# Example Skill for [Plugin Name]
+Use AskUserQuestion to ask: "Would you like to include a README.md for this skill?"
+- Options: "Yes - Include comprehensive README.md" or "No - SKILL.md only"
+- Recommended for: Complex skills with multiple features or configuration
+- Simple skills may not need separate README
 
-## Purpose
-This skill demonstrates how to create a skill for [plugin-name].
-
-## When Claude Should Use This Skill
-Claude should invoke this skill when:
-- User asks about [specific functionality]
-- User mentions keywords like "[keyword1]", "[keyword2]"
-- Context suggests [specific scenario]
-
-## Instructions
-When this skill is invoked:
-1. [Step 1 - what to do]
-2. [Step 2 - how to analyze]
-3. [Step 3 - what to provide]
-
-## Best Practices
-- [Practice 1]
-- [Practice 2]
-```
-
-Write to: `plugins/[plugin-name]/skills/example-skill/SKILL.md`
-
-**Ask about README Generation:**
-
-Use AskUserQuestion to ask if skill should include README:
-```
-Question: "Would you like to include a README.md for this skill?"
-Header: "Skill README"
-Options:
-- "Yes - Include comprehensive README.md"
-- "No - SKILL.md only (suitable for simple skills)"
-Instructions:
-- README recommended for skills with multiple features or configuration
-- README provides user-facing documentation separate from system prompt
-- Simple, single-purpose skills may not need separate README
-```
-
-If user selects "Yes", create README.md adapted from template:
-```markdown
-# Example Skill for [Plugin Name]
-
-Brief overview of what this skill does and its purpose.
-
-## When This Skill Activates
-
-Claude automatically invokes this skill when you:
-- Say "[trigger phrase 1]"
-- Mention "[keyword 1]", "[keyword 2]"
-- Request help with [specific task]
-
-## Features
-
-- Feature 1: [Description based on skill purpose]
-- Feature 2: [Description]
-- Feature 3: [Description]
-
-## Usage Examples
-
-### Example 1: [Scenario Name]
-
-\`\`\`
-You: "[Example user request]"
-
-Claude: [What the skill does in this scenario]
-\`\`\`
-
-### Example 2: [Another Scenario]
-
-\`\`\`
-You: "[Another example]"
-
-Claude: [Expected behavior]
-\`\`\`
-
-## Allowed Tools
-
-This skill uses these tools:
-- \`Read\` - [Purpose for this skill]
-- \`Grep\` - [Purpose for this skill]
-- \`Glob\` - [Purpose for this skill]
-
-## Configuration
-
-[Document any configuration options, or note "No configuration required"]
-
-## Troubleshooting
-
-### Issue: Skill Not Triggering
-
-**Problem**: The skill doesn't activate when expected
-
-**Solutions**:
-- Verify plugin is installed: \`/plugin list\`
-- Check trigger keywords match your request
-- Try more explicit phrases from "When This Skill Activates" section
-
-## Related Documentation
-
-- [Official Plugin Reference](https://code.claude.com/docs/en/plugins-reference)
-- [Starter Plugin Examples](../../../plugins/starter-plugin/)
-- [Project CLAUDE.md](../../../CLAUDE.md)
-
-## Version History
-
-### v1.0.0 (YYYY-MM-DD)
-- Initial release
-- [Key feature 1]
-- [Key feature 2]
-```
-
-Write to: `plugins/[plugin-name]/skills/example-skill/README.md`
+If "Yes" selected:
+1. Read README template: `templates/skill-readme-template.md` or `plugins/plugin-dev/skills/plugin-setup/README.md` as reference
+2. Adapt README with:
+   - Skill overview and activation triggers
+   - Feature list specific to this skill
+   - Usage examples showing common scenarios
+   - Allowed tools and their purposes
+   - Troubleshooting section
+   - Version history
+3. Write to: `plugins/[plugin-name]/skills/example-skill/README.md`
 
 #### If "Agents" Selected:
-```bash
-mkdir -p plugins/[plugin-name]/agents
-```
 
-Read starter example:
-```bash
-Read: plugins/starter-plugin/agents/example-agent.md
-```
-
-Create example agent adapted for the new plugin:
-```markdown
----
-name: example-agent
-description: Example agent for [plugin-name] - specialized subagent for [specific purpose]
-tools: Read, Grep, Glob, Bash
-model: inherit
-permissionMode: auto
----
-
-# Example Agent for [Plugin Name]
-
-You are a specialized agent that [define purpose and role].
-
-## Your Responsibilities
-
-When launched, you should:
-1. [Primary responsibility]
-2. [Secondary responsibility]
-3. [Final responsibility]
-
-## Approach
-
-Follow this systematic approach:
-1. **[Phase 1 Name]**: [What to do in phase 1]
-2. **[Phase 2 Name]**: [What to do in phase 2]
-3. **[Phase 3 Name]**: [What to do in phase 3]
-
-## Completion Criteria
-
-You are done when:
-- [Criterion 1]
-- [Criterion 2]
-- [Criterion 3]
-
-## Report Format
-
-Provide your final report in this format:
-- **Summary**: [Brief overview]
-- **Findings**: [Key findings]
-- **Recommendations**: [Actionable recommendations]
-```
-
-Write to: `plugins/[plugin-name]/agents/example-agent.md`
+1. Create directory: `mkdir -p plugins/[plugin-name]/agents`
+2. Read starter template: `plugins/starter-plugin/agents/example-agent.md`
+3. Adapt template with:
+   - Update `name` and `description` for agent purpose
+   - Set `tools` list (restrict to needed tools)
+   - Choose `model` (inherit, sonnet, opus, haiku)
+   - Set `permissionMode` (auto, ask, or omit)
+   - Define agent's role and responsibilities
+   - Specify systematic approach/phases
+   - Add completion criteria and report format
+4. Write to: `plugins/[plugin-name]/agents/example-agent.md`
 
 #### If "Hooks" Selected:
-```bash
-mkdir -p plugins/[plugin-name]/hooks/scripts
-```
 
-Read starter examples:
-```bash
-Read: plugins/starter-plugin/hooks/hooks.json
-Read: plugins/starter-plugin/hooks/scripts/example-hook.sh
-```
-
-Create hooks.json adapted for the new plugin:
-```json
-{
-  "description": "Example hooks for [plugin-name] validation and automation",
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "Before modifying files, ensure changes align with [plugin-name] best practices and conventions."
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "matcher": ".*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/session-start.sh",
-            "timeout": 10
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/post-write.sh",
-            "args": ["${TOOL_NAME}", "${TOOL_INPUT}"],
-            "timeout": 15
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-Write to: `plugins/[plugin-name]/hooks/hooks.json`
-
-Create example hook script:
-```bash
-#!/bin/bash
-# Example hook script for [plugin-name]
-# This script runs at session start
-
-# Available environment variables:
-# - TOOL_NAME: Name of the tool being used
-# - TOOL_INPUT: JSON input to the tool
-# - TOOL_OUTPUT: JSON output from tool (PostToolUse only)
-# - CLAUDE_PLUGIN_ROOT: Absolute path to plugin directory
-# - CLAUDE_PROJECT_DIR: Absolute path to project directory
-
-echo "[plugin-name] hook: Session started successfully"
-
-# Add your validation or automation logic here
-
-# Exit codes:
-# 0 = Success (allow operation to continue)
-# 1 = Failure (block operation for PreToolUse hooks)
-
-exit 0
-```
-
-Write to: `plugins/[plugin-name]/hooks/scripts/session-start.sh`
-
-Make scripts executable:
-```bash
-chmod +x plugins/[plugin-name]/hooks/scripts/*.sh
-```
+1. Create directory: `mkdir -p plugins/[plugin-name]/hooks/scripts`
+2. Read starter templates:
+   - `plugins/starter-plugin/hooks/hooks.json`
+   - `plugins/starter-plugin/hooks/scripts/example-hook.sh`
+3. Adapt hooks.json with:
+   - Update description for plugin purpose
+   - Choose hook events (PreToolUse, PostToolUse, SessionStart, etc.)
+   - Set tool matchers (regex for which tools trigger hooks)
+   - Use `${CLAUDE_PLUGIN_ROOT}` for all script paths
+   - Configure timeouts (10-30s recommended)
+4. Write to: `plugins/[plugin-name]/hooks/hooks.json`
+5. Adapt hook scripts with:
+   - Add plugin-specific validation or automation logic
+   - Use environment variables (TOOL_NAME, TOOL_INPUT, etc.)
+   - Proper exit codes (0=success, 1=block)
+   - Include shebang `#!/bin/bash`
+6. Write to: `plugins/[plugin-name]/hooks/scripts/[hook-name].sh`
+7. Make executable: `chmod +x plugins/[plugin-name]/hooks/scripts/*.sh`
 
 #### If "MCP Servers" Selected:
-Read starter example:
-```bash
-Read: plugins/starter-plugin/.mcp.json
-```
 
-Create .mcp.json adapted for the new plugin:
-```json
-{
-  "_comment": "Example MCP server configurations for [plugin-name]",
-
-  "example-stdio-server": {
-    "command": "${CLAUDE_PLUGIN_ROOT}/servers/example-server",
-    "args": ["--config", "${CLAUDE_PLUGIN_ROOT}/config/server.json"],
-    "env": {
-      "API_KEY": "${API_KEY}",
-      "LOG_LEVEL": "${LOG_LEVEL:-info}",
-      "TIMEOUT": "${TIMEOUT:-30}"
-    }
-  },
-
-  "example-sse-server": {
-    "transport": "sse",
-    "url": "http://localhost:3000/sse",
-    "env": {
-      "AUTH_TOKEN": "${AUTH_TOKEN}"
-    }
-  }
-}
-```
-
-Write to: `plugins/[plugin-name]/.mcp.json`
-
-Create README for MCP setup:
-```markdown
-# MCP Server Setup for [Plugin Name]
-
-## Required Environment Variables
-
-Before using MCP servers in this plugin, set these environment variables:
-
-- `API_KEY`: Your API key for the service
-- `AUTH_TOKEN`: Authentication token (optional)
-- `LOG_LEVEL`: Logging level (default: info)
-- `TIMEOUT`: Request timeout in seconds (default: 30)
-
-## Setup Instructions
-
-1. Set environment variables in your shell:
-   \`\`\`bash
-   export API_KEY="your-api-key"
-   export AUTH_TOKEN="your-token"
-   \`\`\`
-
-2. Install the plugin with MCP support
-
-3. MCP servers will automatically connect when needed
-
-## Testing MCP Servers
-
-[Add specific testing instructions for your MCP servers]
-```
-
-Write to: `plugins/[plugin-name]/MCP-SETUP.md`
+1. Read starter template: `plugins/starter-plugin/.mcp.json`
+2. Adapt .mcp.json with:
+   - Update server names for plugin purpose
+   - Set server commands/URLs using `${CLAUDE_PLUGIN_ROOT}`
+   - Configure transport type (stdio, sse, http, websocket)
+   - Define environment variables with defaults: `${VAR:-default}`
+   - Add server-specific arguments
+3. Write to: `plugins/[plugin-name]/.mcp.json`
+4. Create MCP-SETUP.md with:
+   - List of required environment variables
+   - Setup instructions for users
+   - Testing procedures for MCP servers
+5. Write to: `plugins/[plugin-name]/MCP-SETUP.md`
 
 ---
 
@@ -700,135 +431,21 @@ Your plugin files are located at:
 
 ---
 
-## Educational Insights
+## Important Notes
 
-Throughout the process, provide these key insights:
+### Error Handling
+- If plugin already exists, ask user to choose different name or add to existing
+- If invalid name format, explain kebab-case requirement and ask again
+- If JSON validation fails, show error and fix syntax automatically
+- If hook scripts not executable, run `chmod +x` automatically
 
-### Insight 1: Component Directory Structure
-```
-★ Insight ─────────────────────────────────────
-Component directories MUST be at plugin root level, not inside `.claude-plugin/`.
+### Educational Guidance
+- For detailed insights on component structure, skill descriptions, path variables, hooks, and security, refer users to the comprehensive README.md
+- README contains: Educational Insights, Implementation Details, Performance Notes sections
 
-Correct:   plugins/my-plugin/commands/
-Incorrect: plugins/my-plugin/.claude-plugin/commands/
-
-This is the most common mistake in plugin development!
-─────────────────────────────────────────────────
-```
-
-### Insight 2: Skill Descriptions
-```
-★ Insight ─────────────────────────────────────
-Skill descriptions must include TWO critical parts:
-
-1. WHAT it does: "Analyzes code quality"
-2. WHEN to use: "Use when user asks to review code or check quality"
-
-Without the WHEN part, Claude won't know when to trigger the skill autonomously.
-─────────────────────────────────────────────────
-```
-
-### Insight 3: Path Variables
-```
-★ Insight ─────────────────────────────────────
-Always use ${CLAUDE_PLUGIN_ROOT} for plugin-relative paths in:
-- hooks.json command paths
-- .mcp.json server paths
-
-This ensures the plugin works regardless of where it's installed:
-- User scope: ~/.claude/plugins/
-- Project scope: .claude/plugins/
-- Local scope: .claude/plugins.local/
-
-Hardcoded paths will break portability!
-─────────────────────────────────────────────────
-```
-
-### Insight 4: Hook Scripts
-```
-★ Insight ─────────────────────────────────────
-Hook scripts must be executable (chmod +x) and use proper exit codes:
-
-- Exit 0: Success (allow operation to continue)
-- Exit 1: Failure (block operation for PreToolUse hooks)
-
-Environment variables available in hooks:
-- TOOL_NAME, TOOL_INPUT, TOOL_OUTPUT
-- CLAUDE_PLUGIN_ROOT, CLAUDE_PROJECT_DIR
-─────────────────────────────────────────────────
-```
-
-### Insight 5: Security with Tool Restrictions
-```
-★ Insight ─────────────────────────────────────
-Use allowed-tools to restrict component capabilities:
-
-- Read-only: allowed-tools: Read, Grep, Glob
-- File modification: allowed-tools: Read, Write, Edit
-- Git only: allowed-tools: Bash(git:*)
-- Full access: omit allowed-tools (use carefully!)
-
-This follows the principle of least privilege for security.
-─────────────────────────────────────────────────
-```
-
----
-
-## Error Handling
-
-If issues occur during setup:
-
-### Plugin Already Exists
-```
-The plugin "[plugin-name]" already exists. Would you like to:
-1. Choose a different name
-2. Add components to existing plugin
-3. Cancel setup
-```
-
-### Invalid Plugin Name
-```
-Plugin name must be kebab-case (lowercase with hyphens only).
-Examples: code-reviewer, api-client, test-runner
-
-Please provide a valid plugin name.
-```
-
-### JSON Validation Failure
-```
-JSON validation failed for [file-path]:
-[error message]
-
-I'll fix this syntax error and try again.
-```
-
-### Hook Script Not Executable
-```
-Hook scripts are not executable. Making them executable now:
-chmod +x plugins/[plugin-name]/hooks/scripts/*.sh
-```
-
----
-
-## Summary
-
-This skill provides a complete, automated workflow for plugin creation:
-
-1. ✅ Interactive requirement gathering
-2. ✅ Proper directory structure creation
-3. ✅ Component scaffolding with examples
-4. ✅ Marketplace registration
-5. ✅ Documentation updates
-6. ✅ Comprehensive validation
-7. ✅ Local testing instructions
-8. ✅ Educational insights throughout
-
-The result is a fully functional, validated plugin ready for customization and testing.
-
-## Reference Files
-
+### Reference Files
 Always consult these reference implementations:
-- `/plugins/starter-plugin/` - Complete working examples
-- `/.claude-plugin/marketplace.json` - Marketplace structure
-- `/CLAUDE.md` - Project conventions and patterns
-- `https://code.claude.com/docs/en/plugins-reference` - Official documentation
+- `plugins/starter-plugin/` - Complete working examples
+- `.claude-plugin/marketplace.json` - Marketplace structure
+- `CLAUDE.md` - Project conventions and patterns
+- Plugin-specific README.md - For educational insights and troubleshooting

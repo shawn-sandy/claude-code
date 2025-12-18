@@ -496,6 +496,277 @@ Then reinstall the plugin.
 - Automated marketplace integration
 - Educational insights throughout
 
+## Educational Insights
+
+### Component Directory Structure
+
+**Critical Pattern**: Component directories MUST be at plugin root level, not inside `.claude-plugin/`.
+
+```
+✅ Correct:   plugins/my-plugin/commands/
+❌ Incorrect: plugins/my-plugin/.claude-plugin/commands/
+```
+
+**Why this matters**: Claude Code's auto-discovery system looks for component directories at the plugin root. Placing them inside `.claude-plugin/` breaks the discovery mechanism, and your components won't load.
+
+**Auto-discovery directories**:
+- `commands/*.md` → Slash commands
+- `skills/*/SKILL.md` → Autonomous skills
+- `agents/*.md` → Specialized agents
+- `hooks/hooks.json` → Event automation
+- `.mcp.json` → MCP servers
+
+This is the **most common mistake** in plugin development!
+
+### Skill Description Pattern
+
+Skill descriptions must include TWO critical parts:
+
+1. **WHAT it does**: "Analyzes code quality and suggests improvements"
+2. **WHEN to use**: "Use when user asks to review code or check quality"
+
+Without the WHEN part, Claude won't know when to trigger the skill autonomously.
+
+**Good examples**:
+```yaml
+description: Interactive plugin setup tool. Use when user asks to "create plugin", "new plugin", "scaffold plugin", or mentions Claude Code plugin components.
+```
+
+**Bad examples**:
+```yaml
+# ❌ Missing trigger conditions
+description: Interactive plugin setup tool.
+
+# ❌ Too vague
+description: Use this for plugin stuff.
+```
+
+### Path Variables for Portability
+
+Always use `${CLAUDE_PLUGIN_ROOT}` for plugin-relative paths in:
+- `hooks.json` command paths
+- `.mcp.json` server paths
+
+**Why this matters**: Plugins can be installed in different scopes:
+- User scope: `~/.claude/plugins/`
+- Project scope: `.claude/plugins/`
+- Local scope: `.claude/plugins.local/`
+- Managed scope: Enterprise-controlled locations
+
+Hardcoded paths will break portability!
+
+**Correct usage**:
+```json
+// hooks.json
+{
+  "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/validate.sh"
+}
+
+// .mcp.json
+{
+  "command": "${CLAUDE_PLUGIN_ROOT}/servers/api-server",
+  "args": ["--config", "${CLAUDE_PLUGIN_ROOT}/config/settings.json"]
+}
+```
+
+**Incorrect usage**:
+```json
+// ❌ Hardcoded absolute path
+{
+  "command": "/Users/username/.claude/plugins/my-plugin/hooks/scripts/validate.sh"
+}
+
+// ❌ Using ~ or $HOME
+{
+  "command": "~/plugins/my-plugin/servers/api-server"
+}
+
+// ❌ Relative path without variable
+{
+  "command": "./hooks/scripts/validate.sh"
+}
+```
+
+**Other path variables**:
+- `${CLAUDE_PROJECT_DIR}` - Project root directory
+- `${VAR:-default}` - Environment variable with default value
+
+### Hook Scripts Best Practices
+
+Hook scripts must be executable and use proper exit codes:
+
+**Exit codes**:
+- `0` = Success (allow operation to continue)
+- `1` = Failure (block operation for PreToolUse hooks)
+
+**Environment variables available**:
+- `TOOL_NAME` - Name of the tool being used
+- `TOOL_INPUT` - JSON input to the tool
+- `TOOL_OUTPUT` - JSON output (PostToolUse only)
+- `CLAUDE_PLUGIN_ROOT` - Absolute path to plugin directory
+- `CLAUDE_PROJECT_DIR` - Absolute path to project directory
+
+**Template structure**:
+```bash
+#!/bin/bash
+# Purpose: Validate write operations
+# Events: PreToolUse
+# Exit: 0=allow, 1=block
+
+# Access environment variables
+if [ "$TOOL_NAME" = "Write" ]; then
+  echo "Validating write operation..."
+
+  # Your validation logic here
+
+  # Exit with appropriate code
+  exit 0  # Allow
+  # exit 1  # Block
+fi
+```
+
+**Common issues**:
+- Script not executable: `chmod +x script.sh`
+- Missing shebang: Always include `#!/bin/bash`
+- Wrong exit code: PreToolUse with exit 1 blocks operation
+- Timeout: Keep scripts under 10-30s execution time
+
+### Security with Tool Restrictions
+
+Use `allowed-tools` frontmatter field to restrict component capabilities following the **principle of least privilege**:
+
+**Read-only operations**:
+```yaml
+allowed-tools: Read, Grep, Glob
+```
+
+**File modification**:
+```yaml
+allowed-tools: Read, Write, Edit
+```
+
+**Git operations only**:
+```yaml
+allowed-tools: Bash(git:*)
+```
+
+**Full access** (use carefully!):
+```yaml
+# Omit allowed-tools for full access
+```
+
+**Why restrict tools**:
+- Prevents accidental destructive operations
+- Limits security surface area
+- Makes component behavior predictable
+- Easier to audit and review
+
+**Example security levels**:
+- Analysis skills: `Read, Grep, Glob` (read-only)
+- Code generation: `Read, Write` (create new files)
+- Refactoring: `Read, Edit` (modify existing)
+- Build automation: `Bash(npm:*, make:*)` (specific commands)
+
+## Implementation Details
+
+### Template Adaptation Pattern
+
+The skill uses a **"Read + Adapt"** pattern for component generation:
+
+1. **Read** the authoritative template from `starter-plugin`
+2. **Adapt** with plugin-specific changes (name, description, purpose)
+3. **Write** to new plugin directory
+
+**Why this approach**:
+- Single source of truth (`starter-plugin`)
+- Templates stay up-to-date with conventions
+- Reduced maintenance burden
+- Consistent structure across all plugins
+
+**Example workflow**:
+```
+1. Read: plugins/starter-plugin/commands/example.md
+2. Adapt:
+   - Replace "starter-plugin" with actual plugin name
+   - Update description to match plugin purpose
+   - Customize argument-hint and allowed-tools
+   - Replace example content with plugin-specific instructions
+3. Write: plugins/my-plugin/commands/my-command.md
+```
+
+### Validation Strategy
+
+**Multi-layer validation** ensures plugin quality:
+
+**Layer 1 - Syntax Validation**:
+```bash
+jq empty file.json                    # JSON syntax
+python3 -c "import yaml; yaml.safe_load(open('file.md').read())"  # YAML
+bash -n script.sh                     # Bash syntax
+```
+
+**Layer 2 - Structural Validation**:
+- Components at plugin root (not in `.claude-plugin/`)
+- Naming conventions (kebab-case)
+- Required frontmatter fields present
+- Path variables used correctly
+
+**Layer 3 - Semantic Validation**:
+- Plugin name unique in marketplace
+- Descriptions include trigger conditions (skills)
+- Tool restrictions appropriate for component type
+- Cross-references valid (file paths exist)
+
+**Why multi-layer**:
+- Catches different error types at appropriate times
+- Fast feedback (syntax first, semantics later)
+- Prevents cascading failures
+- Clear error messages for each layer
+
+### Marketplace Integration
+
+**Atomic update pattern** for marketplace.json:
+
+1. Read current marketplace catalog
+2. Parse JSON structure
+3. Add new plugin entry to array
+4. Validate entire JSON structure
+5. Write back only if valid
+
+**Why atomic**: Prevents corrupting marketplace catalog with partial updates. If validation fails, original file remains unchanged.
+
+**Entry format**:
+```json
+{
+  "name": "plugin-name",
+  "source": "./plugins/plugin-name",
+  "description": "Brief description (1-2 sentences)",
+  "version": "1.0.0"
+}
+```
+
+## Performance Notes
+
+### Token Efficiency Considerations
+
+**System Prompt Design**: The SKILL.md file is loaded into Claude's context on every activation. Large system prompts reduce available tokens for actual plugin generation and slow response times.
+
+**Optimization strategy**:
+- Keep SKILL.md focused on execution logic (what to do)
+- Move educational content to README.md (why and how)
+- Use reference pattern instead of embedding full templates
+- Result: Faster activation, more context for generation
+
+**Current approach**: SKILL.md references `starter-plugin` files instead of embedding complete templates, saving ~300 lines (~3,600 tokens) per activation.
+
+### Validation Performance
+
+**Fast validations first**: JSON and YAML syntax checks run before expensive operations like file system searches or script execution.
+
+**Parallel validation**: Independent checks (JSON files, YAML frontmatter, scripts) can conceptually run in parallel, though current implementation is sequential for clarity.
+
+**Timeout considerations**: Hook scripts validated for syntax only during setup. Runtime execution uses configured timeouts (10-30s recommended).
+
 ## Contributing
 
 To improve this skill:
@@ -505,6 +776,7 @@ To improve this skill:
 3. Suggest additional validations
 4. Propose new component templates
 5. Improve error messages
+6. Submit improvements via OpenSpec proposals
 
 ## License
 
