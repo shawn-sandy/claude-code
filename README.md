@@ -16,6 +16,26 @@ Then install any plugin:
 /plugin install starter-plugin@claude-code-marketplace
 ```
 
+### Local Development
+
+For local testing or development, you can add this marketplace from your filesystem:
+
+```bash
+# Add marketplace from local directory
+/plugin marketplace add /Users/shawnsandy/devbox/claude-code
+
+# Or use a relative path
+/plugin marketplace add ./path/to/claude-code
+
+# Then install plugins
+/plugin install starter-plugin@claude-code-marketplace
+```
+
+This is useful when:
+- Testing new plugins before publishing
+- Developing plugins locally
+- Using private/internal plugins not on GitHub
+
 ## Available Plugins
 
 ### starter-plugin
