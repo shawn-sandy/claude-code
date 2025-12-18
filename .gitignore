@@ -58,6 +58,7 @@ desktop.ini
 # IDE and editors
 .vscode/
 .idea/
+.cursor/
 *.swp
 *.swo
 *~
@@ -70,6 +71,8 @@ desktop.ini
 # Local plugin overrides
 *.local.md
 .claude/*.local.md
+.claude/settings.local.json
+.claude/*.local.json
 
 # Build outputs
 dist/
