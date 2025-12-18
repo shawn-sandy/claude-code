@@ -1,0 +1,90 @@
+#!/bin/bash
+
+# Husky commit-msg hook
+# Enforces conventional commit message format
+
+COMMIT_MSG_FILE=$1
+COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
+
+# Skip merge commits
+if echo "$COMMIT_MSG" | grep -q "^Merge"; then
+  exit 0
+fi
+
+# Skip revert commits
+if echo "$COMMIT_MSG" | grep -q "^Revert"; then
+  exit 0
+fi
+
+# Skip empty commits (allows --allow-empty for testing)
+if [ -z "$(echo "$COMMIT_MSG" | grep -v '^#')" ]; then
+  exit 0
+fi
+
+# Extract first line (subject)
+SUBJECT=$(echo "$COMMIT_MSG" | head -1)
+
+# Conventional commit pattern
+# Allows: feat, fix, docs, style, refactor, perf, test, chore, build, ci
+#         add, update, remove, enhance, improve
+PATTERN="^(feat|fix|docs|style|refactor|perf|test|chore|build|ci|add|update|remove|enhance|improve)(\(.+\))?: .+"
+
+if ! echo "$SUBJECT" | grep -Eq "$PATTERN"; then
+  echo ""
+  echo "❌ Invalid commit message format"
+  echo ""
+  echo "Your commit message:"
+  echo "  $SUBJECT"
+  echo ""
+  echo "Required format:"
+  echo "  <type>: <description>"
+  echo "  <type>(<scope>): <description>"
+  echo ""
+  echo "Allowed types:"
+  echo "  feat     - New feature"
+  echo "  fix      - Bug fix"
+  echo "  docs     - Documentation changes"
+  echo "  style    - Code style changes (formatting, etc.)"
+  echo "  refactor - Code refactoring"
+  echo "  perf     - Performance improvements"
+  echo "  test     - Adding or updating tests"
+  echo "  chore    - Maintenance tasks"
+  echo "  build    - Build system changes"
+  echo "  ci       - CI/CD changes"
+  echo "  add      - Adding new content/features"
+  echo "  update   - Updating existing content"
+  echo "  remove   - Removing content"
+  echo "  enhance  - Enhancing existing features"
+  echo "  improve  - Improving existing code/features"
+  echo ""
+  echo "Examples:"
+  echo "  docs: update README with installation steps"
+  echo "  feat(plugins): add new testing plugin"
+  echo "  fix: resolve JSON validation issue"
+  echo "  enhance: improve error messages in hooks"
+  echo ""
+  echo "Tip: Use '--no-verify' to bypass this check (not recommended)"
+  echo ""
+  exit 1
+fi
+
+# Check minimum length (type + colon + space + description)
+if [ ${#SUBJECT} -lt 10 ]; then
+  echo ""
+  echo "❌ Commit message too short"
+  echo "   Minimum 10 characters required"
+  echo "   Your message: ${#SUBJECT} characters"
+  echo ""
+  exit 1
+fi
+
+# Check maximum length for first line (72 characters recommended)
+if [ ${#SUBJECT} -gt 100 ]; then
+  echo ""
+  echo "⚠️  Warning: Commit subject line is long (${#SUBJECT} characters)"
+  echo "   Consider keeping under 72 characters for better readability"
+  echo ""
+  # Don't fail, just warn
+fi
+
+exit 0

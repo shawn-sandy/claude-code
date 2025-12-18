@@ -375,6 +375,163 @@ Before submitting:
 - [ ] Plugin installs without errors locally
 - [ ] All components work as expected
 
+## Git Hooks (Husky)
+
+This repository uses Husky git hooks to automatically validate changes before commits and pushes. Hooks are located in `.husky/` and run automatically without requiring npm or package.json.
+
+### Installed Hooks
+
+**pre-commit:**
+- Validates JSON files (marketplace.json, plugin.json, hooks.json, .mcp.json)
+- Checks shell script syntax with `bash -n`
+- Verifies hook scripts are executable
+- Validates YAML frontmatter in markdown files
+
+**commit-msg:**
+- Enforces conventional commit message format
+- Validates commit message structure and length
+- Provides helpful error messages with examples
+
+**pre-push:**
+- Runs OpenSpec validation if spec files changed
+- Scans for accidentally committed secrets
+- Validates marketplace catalog consistency
+- Checks plugin structure integrity
+
+**prepare-commit-msg:**
+- Adds helpful commit message template
+- Includes type options and examples
+- Appears when creating new commits
+
+### Bypassing Hooks
+
+If you need to bypass hooks (use sparingly and with caution):
+
+```bash
+# Skip pre-commit and commit-msg hooks
+git commit --no-verify -m "message"
+
+# Skip pre-push hook
+git push --no-verify
+```
+
+**Note:** Only bypass hooks when absolutely necessary, such as urgent hotfixes or false positives. All commits should pass validation before merging.
+
+### Common Validation Errors
+
+**JSON validation failed:**
+```bash
+# Problem: Invalid JSON syntax
+# Solution: Run jq to see specific error
+jq . .claude-plugin/marketplace.json
+
+# Common issues:
+# - Missing commas between objects
+# - Trailing commas (invalid in JSON)
+# - Unquoted strings
+# - Mismatched brackets
+```
+
+**Shell script not executable:**
+```bash
+# Problem: Hook script not executable
+# Solution: Add executable permission
+chmod +x plugins/starter-plugin/hooks/scripts/example-hook.sh
+```
+
+**Invalid commit message:**
+```bash
+# Problem: Commit message doesn't follow conventional format
+# Solution: Use proper format
+
+# ❌ Bad:
+git commit -m "updated docs"
+git commit -m "WIP"
+
+# ✅ Good:
+git commit -m "docs: update README with installation steps"
+git commit -m "feat(plugins): add testing plugin"
+git commit -m "fix: resolve JSON validation issue"
+```
+
+**Allowed commit types:**
+- `feat` - New feature
+- `fix` - Bug fix
+- `docs` - Documentation changes
+- `style` - Code style changes
+- `refactor` - Code refactoring
+- `perf` - Performance improvements
+- `test` - Adding or updating tests
+- `chore` - Maintenance tasks
+- `add`, `update`, `remove`, `enhance`, `improve` - Content changes
+
+**OpenSpec validation failed:**
+```bash
+# Problem: OpenSpec validation errors
+# Solution: Run validation locally and fix issues
+openspec validate --strict
+
+# Common issues:
+# - Missing required fields in spec
+# - Incorrect delta format
+# - Scenario formatting issues
+```
+
+**Potential secrets detected:**
+```bash
+# Problem: Pattern matching API keys, tokens, passwords
+# Solution: Remove sensitive data, use environment variables
+
+# ❌ Bad:
+api_key = "sk_live_abc123def456"
+password = "mySecretPassword"
+
+# ✅ Good:
+api_key = "${API_KEY}"  # In .mcp.json
+# Document in README: "Set API_KEY environment variable"
+```
+
+### Hook Configuration
+
+Hooks use system tools without dependencies:
+- **jq** - JSON validation (pre-installed on macOS/Linux)
+- **bash** - Shell script validation (built-in)
+- **openspec** - OpenSpec validation (if installed)
+
+If a tool is not available, the hook will skip that validation or show a warning.
+
+### Troubleshooting
+
+**Hooks not running:**
+```bash
+# Verify hooks are executable
+ls -la .husky/
+
+# All hooks should have execute permission (x):
+# -rwxr-xr-x  pre-commit
+# -rwxr-xr-x  commit-msg
+# -rwxr-xr-x  pre-push
+
+# If not executable:
+chmod +x .husky/*
+```
+
+**Hook script errors:**
+```bash
+# Test hook manually
+./.husky/pre-commit
+
+# Check for syntax errors
+bash -n .husky/pre-commit
+```
+
+**False positives:**
+If a validation incorrectly blocks your commit:
+1. Review the error message carefully
+2. Verify your changes are correct
+3. If it's truly a false positive, use `--no-verify`
+4. Report the issue so we can improve the hook
+
 ## Submitting Changes
 
 ### Pull Request Process

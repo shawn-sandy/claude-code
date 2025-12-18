@@ -36,6 +36,32 @@ This is useful when:
 - Developing plugins locally
 - Using private/internal plugins not on GitHub
 
+### Git Hooks
+
+This repository uses Husky git hooks for automated validation. The hooks run automatically and require no npm/node setup:
+
+**Validation Hooks:**
+- `pre-commit` - Validates JSON, shell scripts, and YAML frontmatter
+- `commit-msg` - Enforces conventional commit format (`<type>: <description>`)
+- `pre-push` - Runs OpenSpec validation and security checks
+- `prepare-commit-msg` - Provides helpful commit message template
+
+The hooks use system tools (`jq`, `bash`, `openspec`) without additional dependencies.
+
+**Commit Message Format:**
+```bash
+# Required format
+<type>: <description>
+<type>(<scope>): <description>
+
+# Examples
+docs: update README with installation steps
+feat(plugins): add new testing plugin
+fix: resolve JSON validation issue
+```
+
+For troubleshooting and bypassing hooks, see [CONTRIBUTING.md](CONTRIBUTING.md#git-hooks-husky).
+
 ## Available Plugins
 
 ### starter-plugin
