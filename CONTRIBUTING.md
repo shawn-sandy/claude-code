@@ -743,8 +743,8 @@ If a validation incorrectly blocks your commit:
 
 ## Questions and Support
 
-- **Issues:** [GitHub Issues](https://github.com/shawnsandy/claude-code/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/shawnsandy/claude-code/discussions)
+- **Issues:** [GitHub Issues](https://github.com/shawn-sandy/claude-code/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/shawn-sandy/claude-code/discussions)
 - **Documentation:** https://code.claude.com/docs/en/plugins
 
 ## License

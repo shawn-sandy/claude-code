@@ -303,8 +303,8 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/shawnsandy/claude-code/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/shawnsandy/claude-code/discussions)
+- **Issues**: [GitHub Issues](https://github.com/shawn-sandy/claude-code/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/shawn-sandy/claude-code/discussions)
 - **Claude Code Help**: Use `/help` in Claude Code
 
 ## Acknowledgments
