@@ -178,7 +178,7 @@ When required, follow the three-stage workflow in `openspec/AGENTS.md`:
 
 ```bash
 # Add marketplace from local filesystem
-/plugin marketplace add /Users/shawn-sandy/devbox/claude-code
+/plugin marketplace add /path/to/claude-code
 # Or relative path from anywhere
 /plugin marketplace add ./path/to/claude-code
 
@@ -265,7 +265,7 @@ Install and test all components before committing.
 ```bash
 # Validate all JSON files
 jq empty .claude-plugin/marketplace.json
-jq empty plugins/*/. claude-plugin/plugin.json
+jq empty plugins/*/.claude-plugin/plugin.json
 jq empty plugins/*/hooks/hooks.json
 jq empty plugins/*/.mcp.json
 

@@ -98,7 +98,7 @@ Provide commands to user:
 
 ```bash
 # Add marketplace from local filesystem
-/plugin marketplace add /Users/shawn-sandy/devbox/claude-code
+/plugin marketplace add /path/to/claude-code
 
 # Install plugin for testing
 /plugin install [plugin-name]@claude-code-marketplace
@@ -322,9 +322,9 @@ After skill creation:
 ## Reference Documentation
 
 - Official Plugin Reference: <https://code.claude.com/docs/en/plugins-reference>
-- Project CLAUDE.md: `/Users/shawn-sandy/devbox/claude-code/CLAUDE.md`
-- Starter Plugin: `/Users/shawn-sandy/devbox/claude-code/plugins/starter-plugin/`
-- OpenSpec Agents: `/Users/shawn-sandy/devbox/claude-code/openspec/AGENTS.md`
+- Project CLAUDE.md: `/path/to/claude-code/CLAUDE.md`
+- Starter Plugin: `/path/to/claude-code/plugins/starter-plugin/`
+- OpenSpec Agents: `/path/to/claude-code/openspec/AGENTS.md`
 
 ## Notes
 

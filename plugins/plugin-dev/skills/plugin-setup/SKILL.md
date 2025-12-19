@@ -386,7 +386,7 @@ Your plugin has been created successfully! Here's how to test it:
 
 ### 1. Add Marketplace Locally
 \`\`\`bash
-/plugin marketplace add /Users/shawn-sandy/devbox/claude-code
+/plugin marketplace add /path/to/claude-code
 \`\`\`
 
 ### 2. Verify Marketplace
