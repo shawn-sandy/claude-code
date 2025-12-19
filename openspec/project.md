@@ -89,7 +89,7 @@ Claude Code automatically discovers components by location:
 
 ```bash
 # Add marketplace locally
-/plugin marketplace add /Users/shawn-sandy/devbox/claude-code
+/plugin marketplace add /path/to/claude-code
 
 # Install plugin
 /plugin install plugin-name@claude-code-marketplace

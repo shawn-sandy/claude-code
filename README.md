@@ -22,7 +22,7 @@ For local testing or development, you can add this marketplace from your filesys
 
 ```bash
 # Add marketplace from local directory
-/plugin marketplace add /Users/shawn-sandy/devbox/claude-code
+/plugin marketplace add /path/to/claude-code
 
 # Or use a relative path
 /plugin marketplace add ./path/to/claude-code
