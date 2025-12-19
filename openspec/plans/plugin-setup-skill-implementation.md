@@ -4,10 +4,13 @@
 **Status**: Approved - Ready for Implementation
 
 ## Overview
+
 Create an interactive skill that guides users through setting up new Claude Code plugins with comprehensive validation and automation.
 
 ## User Requirements
+
 Based on user selections:
+
 - **Scope**: Interactive - ask user what components to include during execution
 - **Automation**: Fully automated - update marketplace.json, README.md, and run validation
 - **Triggers**: "create plugin", "setup plugin", and component addition keywords
@@ -16,25 +19,32 @@ Based on user selections:
 ## Implementation Steps
 
 ### 1. Create Skill Directory Structure
+
 - Create `plugins/plugin-dev/skills/plugin-setup/` directory
 - Add `SKILL.md` with frontmatter and detailed instructions
 
 ### 2. Skill Configuration
+
 **Frontmatter:**
+
 - **Name**: `plugin-setup`
 - **Description**: Includes trigger keywords: "create plugin", "new plugin", "scaffold plugin", "setup plugin", "initialize plugin", "add command", "add skill", "add agent", "add hook", "add MCP"
 - **Allowed Tools**: `Read`, `Write`, `Edit`, `Bash`, `Glob`, `Grep`, `AskUserQuestion`
 
 ### 3. Skill Workflow
+
 The skill will:
 
 #### Phase 1: Gather Requirements
+
 Ask user interactively using AskUserQuestion:
+
 - Plugin name (validate kebab-case)
 - Description and metadata (author, homepage, repository)
 - Which components to include (commands/skills/agents/hooks/MCP)
 
 #### Phase 2: Create Plugin Structure
+
 - Create `plugins/[name]/.claude-plugin/` directory
 - Generate `plugin.json` with validated metadata
 - Create selected component directories at plugin root
@@ -46,12 +56,14 @@ Ask user interactively using AskUserQuestion:
   - MCP: Create `.mcp.json` with server templates
 
 #### Phase 3: Update Marketplace
+
 - Read `.claude-plugin/marketplace.json`
 - Add new plugin entry with name, source, description, version
 - Validate JSON syntax with `jq`
 - Write updated marketplace.json
 
 #### Phase 4: Update Documentation
+
 - Read `README.md`
 - Add plugin section under "Available Plugins"
 - Include:
@@ -62,7 +74,9 @@ Ask user interactively using AskUserQuestion:
 - Write updated README.md
 
 #### Phase 5: Comprehensive Validation
+
 Execute validation checks:
+
 ```bash
 # JSON validation
 jq empty .claude-plugin/marketplace.json
@@ -79,10 +93,12 @@ bash -n plugins/[name]/hooks/scripts/*.sh
 ```
 
 #### Phase 6: Local Testing Guide
+
 Provide commands to user:
+
 ```bash
 # Add marketplace from local filesystem
-/plugin marketplace add /Users/shawnsandy/devbox/claude-code
+/plugin marketplace add /Users/shawn-sandy/devbox/claude-code
 
 # Install plugin for testing
 /plugin install [plugin-name]@claude-code-marketplace
@@ -94,7 +110,9 @@ Provide commands to user:
 ```
 
 ### 4. Reference Implementation
+
 Use `plugins/starter-plugin/` as template source:
+
 - Read starter-plugin component files
 - Adapt examples for new plugin
 - Maintain path variable patterns (`${CLAUDE_PLUGIN_ROOT}`)
@@ -102,7 +120,9 @@ Use `plugins/starter-plugin/` as template source:
 - Preserve security patterns (allowed-tools restrictions)
 
 ### 5. Educational Insights
+
 Include explanations about:
+
 - **Directory Structure**: Why components must be at plugin root, not in `.claude-plugin/`
 - **Path Variables**: Importance of `${CLAUDE_PLUGIN_ROOT}` for portability
 - **Skill Descriptions**: Must include "when to use" trigger conditions
@@ -112,17 +132,20 @@ Include explanations about:
 
 ## Files to Create/Modify
 
-### New Files:
+### New Files
+
 1. `plugins/plugin-dev/skills/plugin-setup/SKILL.md` - Main skill definition with complete workflow
 
-### Modified Files During Execution:
+### Modified Files During Execution
+
 1. `.claude-plugin/marketplace.json` - Add new plugin entry
 2. `README.md` - Add plugin documentation
 3. Plugin-specific files created based on user selections
 
 ## Component Templates
 
-### plugin.json Template:
+### plugin.json Template
+
 ```json
 {
   "name": "[kebab-case-name]",
@@ -139,7 +162,8 @@ Include explanations about:
 }
 ```
 
-### Command Template (commands/example-command.md):
+### Command Template (commands/example-command.md)
+
 ```yaml
 ---
 description: Example command demonstrating command structure
@@ -155,7 +179,8 @@ When user types /example-command, this content becomes the prompt.
 [Instructions for the command]
 ```
 
-### Skill Template (skills/example-skill/SKILL.md):
+### Skill Template (skills/example-skill/SKILL.md)
+
 ```yaml
 ---
 name: example-skill
@@ -174,7 +199,8 @@ You are an autonomous skill that [purpose].
 [Step-by-step process]
 ```
 
-### Agent Template (agents/example-agent.md):
+### Agent Template (agents/example-agent.md)
+
 ```yaml
 ---
 name: example-agent
@@ -200,7 +226,8 @@ You're done when:
 - [Criterion 2]
 ```
 
-### Hooks Template (hooks/hooks.json):
+### Hooks Template (hooks/hooks.json)
+
 ```json
 {
   "description": "Example hooks for validation and logging",
@@ -232,7 +259,8 @@ You're done when:
 }
 ```
 
-### Hook Script Template (hooks/scripts/example-hook.sh):
+### Hook Script Template (hooks/scripts/example-hook.sh)
+
 ```bash
 #!/bin/bash
 # Example hook script
@@ -249,7 +277,8 @@ echo "Hook executed successfully"
 exit 0
 ```
 
-### MCP Template (.mcp.json):
+### MCP Template (.mcp.json)
+
 ```json
 {
   "example-stdio-server": {
@@ -264,7 +293,9 @@ exit 0
 ```
 
 ## Validation Checklist
+
 After skill creation:
+
 - [ ] Skill YAML frontmatter is valid
 - [ ] Description includes all trigger keywords
 - [ ] Workflow handles all component types
@@ -276,6 +307,7 @@ After skill creation:
 - [ ] Security patterns (allowed-tools) are included
 
 ## Success Criteria
+
 - ✅ Skill triggers automatically on "create plugin", "setup plugin" keywords
 - ✅ Interactively asks which components to include via AskUserQuestion
 - ✅ Creates valid plugin structure with all selected components
@@ -288,12 +320,14 @@ After skill creation:
 - ✅ Maintains project conventions (kebab-case, path variables)
 
 ## Reference Documentation
-- Official Plugin Reference: https://code.claude.com/docs/en/plugins-reference
-- Project CLAUDE.md: `/Users/shawnsandy/devbox/claude-code/CLAUDE.md`
-- Starter Plugin: `/Users/shawnsandy/devbox/claude-code/plugins/starter-plugin/`
-- OpenSpec Agents: `/Users/shawnsandy/devbox/claude-code/openspec/AGENTS.md`
+
+- Official Plugin Reference: <https://code.claude.com/docs/en/plugins-reference>
+- Project CLAUDE.md: `/Users/shawn-sandy/devbox/claude-code/CLAUDE.md`
+- Starter Plugin: `/Users/shawn-sandy/devbox/claude-code/plugins/starter-plugin/`
+- OpenSpec Agents: `/Users/shawn-sandy/devbox/claude-code/openspec/AGENTS.md`
 
 ## Notes
+
 - Skill should check if plugin-dev plugin exists before adding to it
 - If plugin-dev doesn't exist, create it first with minimal structure
 - All templates should include inline comments explaining key concepts

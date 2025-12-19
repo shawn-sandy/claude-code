@@ -155,7 +155,7 @@ Example from
 
 ```bash
 # Add marketplace from local filesystem
-/plugin marketplace add /Users/shawnsandy/devbox/claude-code
+/plugin marketplace add /Users/shawn-sandy/devbox/claude-code
 
 # Install and test plugins
 /plugin install starter-plugin@claude-code-marketplace
