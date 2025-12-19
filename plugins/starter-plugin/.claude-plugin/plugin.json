@@ -6,8 +6,8 @@
     "name": "Shawn Sandy",
     "email": "shawn@example.com"
   },
-  "homepage": "https://github.com/shawnsandy/claude-code",
-  "repository": "https://github.com/shawnsandy/claude-code",
+  "homepage": "https://github.com/shawn-sandy/claude-code",
+  "repository": "https://github.com/shawn-sandy/claude-code",
   "license": "MIT",
   "keywords": ["example", "starter", "template", "tutorial", "reference"]
 }

@@ -4,10 +4,17 @@
   "description": "Plugin development toolkit with skills and utilities for creating, scaffolding, and managing Claude Code plugins",
   "author": {
     "name": "Shawn Sandy",
-    "email": "shawn@example.com"
+    "email": "shawnsandy04@gmail.com"
   },
-  "homepage": "https://github.com/shawnsandy/claude-code",
-  "repository": "https://github.com/shawnsandy/claude-code",
+  "homepage": "https://github.com/shawn-sandy/claude-code",
+  "repository": "https://github.com/shawn-sandy/claude-code",
   "license": "MIT",
-  "keywords": ["plugin", "development", "toolkit", "scaffold", "setup", "creator"]
+  "keywords": [
+    "plugin",
+    "development",
+    "toolkit",
+    "scaffold",
+    "setup",
+    "creator"
+  ]
 }
