@@ -7,7 +7,7 @@ A collection of plugins, commands, skills, agents, and hooks for [Claude Code](h
 Add this marketplace to your Claude Code installation:
 
 ```bash
-/plugin marketplace add shawnsandy/claude-code
+/plugin marketplace add shawn-sandy/claude-code
 ```
 
 Then install any plugin:
@@ -22,7 +22,7 @@ For local testing or development, you can add this marketplace from your filesys
 
 ```bash
 # Add marketplace from local directory
-/plugin marketplace add /Users/shawnsandy/devbox/claude-code
+/plugin marketplace add /Users/shawn-sandy/devbox/claude-code
 
 # Or use a relative path
 /plugin marketplace add ./path/to/claude-code
@@ -32,6 +32,7 @@ For local testing or development, you can add this marketplace from your filesys
 ```
 
 This is useful when:
+
 - Testing new plugins before publishing
 - Developing plugins locally
 - Using private/internal plugins not on GitHub
@@ -41,6 +42,7 @@ This is useful when:
 This repository uses Husky git hooks for automated validation. The hooks run automatically and require no npm/node setup:
 
 **Validation Hooks:**
+
 - `pre-commit` - Validates JSON, shell scripts, and YAML frontmatter
 - `commit-msg` - Enforces conventional commit format (`<type>: <description>`)
 - `pre-push` - Runs OpenSpec validation and security checks
@@ -49,6 +51,7 @@ This repository uses Husky git hooks for automated validation. The hooks run aut
 The hooks use system tools (`jq`, `bash`, `openspec`) without additional dependencies.
 
 **Commit Message Format:**
+
 ```bash
 # Required format
 <type>: <description>
@@ -69,6 +72,7 @@ For troubleshooting and bypassing hooks, see [CONTRIBUTING.md](CONTRIBUTING.md#g
 A comprehensive example plugin demonstrating all Claude Code component types with detailed documentation and best practices.
 
 **Components:**
+
 - **Commands**: Example slash command (`/example`) with frontmatter configuration
 - **Skills**: Autonomous skill that explains skill development
 - **Agents**: Specialized agent for learning about agent structure
@@ -76,11 +80,13 @@ A comprehensive example plugin demonstrating all Claude Code component types wit
 - **MCP**: Configuration templates for Model Context Protocol servers
 
 **Install:**
+
 ```bash
 /plugin install starter-plugin@claude-code-marketplace
 ```
 
 **Usage Examples:**
+
 ```bash
 # Try the example command
 /example Hello from the marketplace!
@@ -97,15 +103,18 @@ A comprehensive example plugin demonstrating all Claude Code component types wit
 Plugin development toolkit with interactive skills for creating, scaffolding, and managing Claude Code plugins.
 
 **Components:**
+
 - **Skills**:
   - `plugin-setup` - Interactive plugin scaffolding with comprehensive validation
 
 **Install:**
+
 ```bash
 /plugin install plugin-dev@claude-code-marketplace
 ```
 
 **Usage Examples:**
+
 ```bash
 # The plugin-setup skill triggers automatically when you say:
 "Create a new plugin"
@@ -125,7 +134,9 @@ Plugin development toolkit with interactive skills for creating, scaffolding, an
 ## Plugin Components Explained
 
 ### Commands (Slash Commands)
+
 User-invoked actions that start with `/`. Perfect for:
+
 - Running tests or builds
 - Creating git commits
 - Custom workflows
@@ -134,7 +145,9 @@ User-invoked actions that start with `/`. Perfect for:
 **Structure:** `commands/command-name.md` with YAML frontmatter
 
 ### Skills
+
 Autonomously triggered capabilities that enhance Claude's abilities. Perfect for:
+
 - Code analysis and formatting
 - Documentation generation
 - Pattern detection
@@ -145,7 +158,9 @@ Autonomously triggered capabilities that enhance Claude's abilities. Perfect for
 **Best Practice:** Complex skills should include `README.md` for user documentation separate from the system prompt. See `templates/skill-readme-template.md` for template.
 
 ### Agents
+
 Specialized subagents for complex, domain-specific tasks. Perfect for:
+
 - Code reviews
 - Security audits
 - Research and analysis
@@ -154,7 +169,9 @@ Specialized subagents for complex, domain-specific tasks. Perfect for:
 **Structure:** `agents/agent-name.md` with YAML frontmatter
 
 ### Hooks
+
 Event-driven automation that responds to tool usage and session events. Perfect for:
+
 - Validation and safety checks
 - Logging and monitoring
 - Enforcing best practices
@@ -163,7 +180,9 @@ Event-driven automation that responds to tool usage and session events. Perfect 
 **Structure:** `hooks/hooks.json` with hook configurations
 
 ### MCP Servers
+
 Model Context Protocol integrations for external services. Perfect for:
+
 - API integrations
 - Database access
 - External tool integration
@@ -174,6 +193,7 @@ Model Context Protocol integrations for external services. Perfect for:
 ## Management Commands
 
 ### Marketplace Commands
+
 ```bash
 # List all marketplaces
 /plugin marketplace list
@@ -190,6 +210,7 @@ Model Context Protocol integrations for external services. Perfect for:
 ```
 
 ### Plugin Commands
+
 ```bash
 # List available plugins
 /plugin list
@@ -272,8 +293,8 @@ claude-code/
 
 ## Documentation
 
-- **Official Plugin Docs**: https://code.claude.com/docs/en/plugins
-- **Model Context Protocol**: https://modelcontextprotocol.io
+- **Official Plugin Docs**: <https://code.claude.com/docs/en/plugins>
+- **Model Context Protocol**: <https://modelcontextprotocol.io>
 - **Contributing Guide**: [CONTRIBUTING.md](CONTRIBUTING.md)
 - **Setup Plan**: [plans/plugin-marketplace-setup.md](plans/plugin-marketplace-setup.md)
 

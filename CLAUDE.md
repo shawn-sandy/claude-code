@@ -4,11 +4,13 @@
 These instructions are for AI assistants working in this project.
 
 Always open `@/openspec/AGENTS.md` when the request:
+
 - Mentions planning or proposals (words like proposal, spec, change, plan)
 - Introduces new capabilities, breaking changes, architecture shifts, or big performance/security work
 - Sounds ambiguous and you need the authoritative spec before coding
 
 Use `@/openspec/AGENTS.md` to learn:
+
 - How to create and apply change proposals
 - Spec format and conventions
 - Project structure and guidelines
@@ -26,6 +28,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This is a **Claude Code Plugin Marketplace** - a multi-plugin repository that distributes plugins, commands, skills, agents, and hooks for Claude Code. The marketplace uses a catalog-based architecture where `.claude-plugin/marketplace.json` defines all available plugins.
 
 **Key Characteristics:**
+
 - Pure distribution repository (no build/test commands)
 - Content validated via JSON/YAML validation and local testing
 - OpenSpec-driven for significant changes
@@ -36,11 +39,13 @@ This is a **Claude Code Plugin Marketplace** - a multi-plugin repository that di
 ### Marketplace System
 
 **Two-Level Structure:**
+
 1. **Marketplace Level** (`.claude-plugin/marketplace.json`): Catalog of all plugins with metadata
 2. **Plugin Level** (`plugins/*/.claude-plugin/plugin.json`): Individual plugin manifests
 
 **Auto-Discovery Pattern:**
 Claude Code automatically discovers components in standard directories:
+
 - `commands/*.md` → Slash commands (filename becomes command name)
 - `skills/*/SKILL.md` → Autonomous skills (directory name becomes skill name)
 - `agents/*.md` → Specialized agents (filename becomes agent name)
@@ -52,12 +57,14 @@ Claude Code automatically discovers components in standard directories:
 ### Component Types & When to Use Each
 
 **Commands** (`commands/*.md`):
+
 - User explicitly invokes with `/command-name`
 - Use for: User-triggered workflows, builds, deployments, git operations
 - Structure: Markdown file with YAML frontmatter
 - Key field: `allowed-tools` restricts which tools the command can use
 
 **Skills** (`skills/*/SKILL.md`):
+
 - Claude autonomously triggers based on context
 - Use for: Capabilities that enhance Claude's abilities without user invocation
 - **Critical**: Description must include BOTH "what it does" AND "when to use it"
@@ -65,18 +72,21 @@ Claude Code automatically discovers components in standard directories:
 - **Best Practice**: Include `README.md` for complex skills with multiple features or configuration options
 
 **Agents** (`agents/*.md`):
+
 - Launched via Task tool for complex, isolated tasks
 - Use for: Multi-step workflows, domain expertise, separate context needed
 - Structure: Markdown file with frontmatter + system prompt
 - Key fields: `tools` (restrict access), `model` (inherit/sonnet/opus/haiku), `permissionMode`
 
 **Hooks** (`hooks/hooks.json`):
+
 - Event-driven automation responding to tool use and session events
 - Use for: Validation, logging, enforcing best practices
 - Two types: `prompt` (inject instructions) and `command` (execute scripts)
 - Available events: PreToolUse, PostToolUse, SessionStart, UserPromptSubmit, SessionEnd, Stop, SubagentStop, PermissionRequest, Notification, PreCompact
 
 **MCP Servers** (`.mcp.json`):
+
 - External service integrations via Model Context Protocol
 - Use for: API access, database connections, external tools
 - Path variables: `${CLAUDE_PLUGIN_ROOT}`, `${CLAUDE_PROJECT_DIR}`, `${VAR:-default}`
@@ -84,18 +94,21 @@ Claude Code automatically discovers components in standard directories:
 ### Critical Architecture Patterns
 
 **Path Management:**
+
 - Always use `${CLAUDE_PLUGIN_ROOT}` for plugin-relative paths in hooks and MCP configs
 - Never use hardcoded absolute paths
 - Example in hooks.json: `"command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/example-hook.sh"`
 - Example in .mcp.json: `"args": ["${CLAUDE_PLUGIN_ROOT}/server.js"]`
 
 **Naming Convention:**
+
 - All names: kebab-case (lowercase with hyphens)
 - Plugin names must be unique within marketplace
 - Component names derived from filenames/directories (without extensions)
 - Examples: `code-reviewer`, `test-runner`, `example-skill`
 
 **Frontmatter Requirements:**
+
 - Commands: `description` (required), `argument-hint` (optional), `allowed-tools` (optional), `model` (optional)
 - Skills: `name` (required), `description` (required - must include when to use), `allowed-tools` (optional)
 - Agents: `name` (required), `description` (required), `tools` (optional), `model` (optional), `permissionMode` (optional)
@@ -105,6 +118,7 @@ Claude Code automatically discovers components in standard directories:
 ### Before You Start
 
 **Context Checklist:**
+
 1. Check for existing plugins that might do similar things: `ls plugins/`
 2. Review `openspec list` and `openspec list --specs` to understand current work
 3. Read `openspec/project.md` for project conventions
@@ -129,6 +143,7 @@ Is this change...
 When required, follow the three-stage workflow in `openspec/AGENTS.md`:
 
 1. **Stage 1 - Creating Change:**
+
    ```bash
    # Review existing work
    openspec list
@@ -152,6 +167,7 @@ When required, follow the three-stage workflow in `openspec/AGENTS.md`:
    - Wait for approval before starting
 
 3. **Stage 3 - Archiving:**
+
    ```bash
    # After deployment
    openspec archive [change-id]
@@ -162,7 +178,7 @@ When required, follow the three-stage workflow in `openspec/AGENTS.md`:
 
 ```bash
 # Add marketplace from local filesystem
-/plugin marketplace add /Users/shawnsandy/devbox/claude-code
+/plugin marketplace add /Users/shawn-sandy/devbox/claude-code
 # Or relative path from anywhere
 /plugin marketplace add ./path/to/claude-code
 
@@ -184,6 +200,7 @@ When required, follow the three-stage workflow in `openspec/AGENTS.md`:
 If adding substantial functionality, create proposal first (see OpenSpec Decision Tree above).
 
 **Step 2: Create Plugin Structure**
+
 ```bash
 mkdir -p plugins/new-plugin/.claude-plugin
 mkdir -p plugins/new-plugin/{commands,skills,agents,hooks/scripts}
@@ -191,6 +208,7 @@ mkdir -p plugins/new-plugin/{commands,skills,agents,hooks/scripts}
 
 **Step 3: Create plugin.json**
 Required fields:
+
 ```json
 {
   "name": "new-plugin",
@@ -212,6 +230,7 @@ Follow structure guidelines in Component Types section above. Reference `plugins
 
 **Step 5: Update Marketplace Catalog**
 Edit `.claude-plugin/marketplace.json`:
+
 ```json
 {
   "plugins": [
@@ -227,6 +246,7 @@ Edit `.claude-plugin/marketplace.json`:
 
 **Step 6: Update README.md**
 Add plugin documentation under "Available Plugins" section with:
+
 - Plugin name and description
 - Components list
 - Installation command
@@ -241,6 +261,7 @@ Install and test all components before committing.
 ### Validation Before Committing
 
 **JSON/YAML Validation:**
+
 ```bash
 # Validate all JSON files
 jq empty .claude-plugin/marketplace.json
@@ -253,12 +274,14 @@ python3 -m json.tool .claude-plugin/marketplace.json > /dev/null
 ```
 
 **Frontmatter Validation:**
+
 ```bash
 # Check YAML frontmatter in markdown files
 # Use a YAML validator or manually verify frontmatter syntax
 ```
 
 **Hook Scripts:**
+
 ```bash
 # Ensure executable
 chmod +x plugins/*/hooks/scripts/*.sh
@@ -268,6 +291,7 @@ bash -n plugins/*/hooks/scripts/*.sh
 ```
 
 **Pre-Commit Checklist:**
+
 - [ ] All JSON files are valid (use `jq` or `python -m json.tool`)
 - [ ] YAML frontmatter in all .md files is valid
 - [ ] Hook scripts are executable (`chmod +x`)
@@ -282,6 +306,7 @@ bash -n plugins/*/hooks/scripts/*.sh
 ### Hook Script Development
 
 **Environment Variables Available:**
+
 - `TOOL_NAME`: Name of the tool being used
 - `TOOL_INPUT`: JSON input to the tool
 - `TOOL_OUTPUT`: JSON output from tool (PostToolUse only)
@@ -289,10 +314,12 @@ bash -n plugins/*/hooks/scripts/*.sh
 - `CLAUDE_PROJECT_DIR`: Absolute path to project directory
 
 **Exit Codes:**
+
 - `0`: Success, continue execution
 - `1`: Failure, block operation (for PreToolUse hooks)
 
 **Best Practices:**
+
 ```bash
 #!/bin/bash
 # Always use shebang
@@ -315,6 +342,7 @@ exit 0  # Success
 Configure in `hooks.json`: 10-30s max for performance.
 
 **Make Executable:**
+
 ```bash
 chmod +x hooks/scripts/script.sh
 ```
@@ -322,11 +350,13 @@ chmod +x hooks/scripts/script.sh
 ## Key Distinctions
 
 **Commands vs Skills vs Agents:**
+
 - **Commands**: User types `/name` → Explicit invocation → Prompt expansion
 - **Skills**: Claude decides based on context → Autonomous invocation → Enhanced capability
 - **Agents**: Claude launches via Task tool → Specialized isolated execution → Multi-step workflow
 
 **When Each Component Type is Appropriate:**
+
 - Simple user action (build, commit, deploy) → **Command**
 - Enhance Claude's abilities automatically (formatting, analysis) → **Skill**
 - Complex multi-step task needing isolation (code review, audit) → **Agent**
@@ -338,22 +368,27 @@ chmod +x hooks/scripts/script.sh
 The `starter-plugin` serves as the canonical example implementing all component types:
 
 **Commands:**
+
 - `commands/example.md`: Full command structure with all frontmatter options
 - Demonstrates `allowed-tools`, `argument-hint`, and model selection
 
 **Skills:**
+
 - `skills/example-skill/SKILL.md`: Comprehensive skill with "when to use" guidance
 - Shows proper description format for autonomous triggering
 
 **Agents:**
+
 - `agents/example-agent.md`: Agent with complete system prompt structure
 - Demonstrates tool restriction and permission modes
 
 **Hooks:**
+
 - `hooks/hooks.json`: All hook event types with prompt and command examples
 - `hooks/scripts/example-hook.sh`: Executable hook script with environment variable usage
 
 **MCP:**
+
 - `.mcp.json`: MCP server configuration templates with path variable examples
 
 **Always reference these files when creating new components** - they include inline documentation and best practices that are kept up-to-date.
@@ -362,12 +397,14 @@ The `starter-plugin` serves as the canonical example implementing all component 
 
 **GitHub Installation:**
 Users install via:
+
 ```bash
-/plugin marketplace add shawnsandy/claude-code
+/plugin marketplace add shawn-sandy/claude-code
 ```
 
 **Local Installation:**
 Developers test via:
+
 ```bash
 /plugin marketplace add ./path/to/repository
 # Or absolute path
@@ -375,6 +412,7 @@ Developers test via:
 ```
 
 **Installation Scopes:**
+
 - **user**: `~/.claude/plugins/` - Personal plugins, user-specific
 - **project**: `.claude/plugins/` - Team plugins, version controlled, shared
 - **local**: `.claude/plugins.local/` - Project-specific, gitignored, not shared
@@ -385,21 +423,25 @@ Developers test via:
 ### Security
 
 **Tool Restrictions:**
+
 ```yaml
 # In command/skill/agent frontmatter
 allowed-tools: Bash(git:*), Read, Write  # Restrict to specific tools
 ```
+
 - Use `allowed-tools` to limit capabilities
 - `Bash(git:*)` restricts bash to git commands only
 - Omitting `allowed-tools` grants full access
 
 **Secrets Management:**
+
 - Never commit API keys, tokens, or passwords
 - Use environment variables in `.mcp.json`
 - Document required env vars in plugin README
 - Example: `"env": {"API_KEY": "${API_KEY}"}`
 
 **Input Validation:**
+
 ```bash
 # In hook scripts
 if [[ ! "$TOOL_INPUT" =~ ^[a-zA-Z0-9_-]+$ ]]; then
@@ -409,6 +451,7 @@ fi
 ```
 
 **Script Review:**
+
 - Audit all hook scripts before enabling
 - Check for command injection vulnerabilities
 - Validate file paths and user inputs
@@ -416,18 +459,21 @@ fi
 ### Performance
 
 **Hook Optimization:**
+
 - Target 1-5s execution time
 - Use 10-30s timeout max in `hooks.json`
 - Avoid network calls in PreToolUse hooks
 - Cache expensive operations
 
 **Agent Model Selection:**
+
 - `haiku`: Fast, simple tasks (<100 tokens)
 - `sonnet` (default): Balanced, most tasks
 - `opus`: Complex reasoning, multi-step workflows
 - `inherit`: Use parent conversation's model
 
 **MCP Server Efficiency:**
+
 - Minimize dependencies
 - Implement connection pooling
 - Use timeouts on external calls
@@ -437,6 +483,7 @@ fi
 
 **Plugin README Requirements:**
 Each plugin should document:
+
 - Purpose and capabilities
 - Installation command
 - Component list (commands, skills, agents, hooks, MCP)
@@ -445,12 +492,14 @@ Each plugin should document:
 - Configuration options
 
 **Frontmatter Descriptions:**
+
 - Commands: What the command does and expected arguments
 - Skills: What it does AND when Claude should use it (critical!)
 - Agents: Purpose and when Claude should launch it
 - Clear, concise, user-focused language
 
 **Hook Script Comments:**
+
 ```bash
 #!/bin/bash
 # Purpose: Validate write operations before execution
@@ -463,6 +512,7 @@ Each plugin should document:
 For complex skills with multiple features, include a `README.md` in the skill directory. This separates user-facing documentation from the system prompt (`SKILL.md`).
 
 **When to Include README:**
+
 - Skill has multiple capabilities or features
 - Configuration options available
 - Complex usage patterns or workflows
@@ -470,12 +520,14 @@ For complex skills with multiple features, include a `README.md` in the skill di
 - Public/marketplace distribution
 
 **When README is Optional:**
+
 - Simple, single-purpose skills
 - Self-documenting functionality
 - Internal/private use only
 - Obvious from SKILL.md content
 
 **Template Structure:**
+
 ```markdown
 # Skill Name
 ## When This Skill Activates
@@ -490,6 +542,7 @@ For complex skills with multiple features, include a `README.md` in the skill di
 See `templates/skill-readme-template.md` for comprehensive template with inline comments and guidance.
 
 **Examples:**
+
 - `plugins/plugin-dev/skills/plugin-setup/README.md` - Comprehensive example
 - `plugins/starter-plugin/skills/example-skill/README.md` - Reference implementation
 
@@ -500,6 +553,7 @@ See `templates/skill-readme-template.md` for comprehensive template with inline 
 **Symptoms:** Plugin doesn't appear in `/plugin list`
 
 **Solutions:**
+
 1. Verify plugin is in `.claude-plugin/marketplace.json`
 2. Check plugin path in marketplace catalog is correct
 3. Ensure `plugin.json` exists at `plugins/[name]/.claude-plugin/plugin.json`
@@ -511,6 +565,7 @@ See `templates/skill-readme-template.md` for comprehensive template with inline 
 **Symptoms:** Commands/skills/agents don't work after installation
 
 **Solutions:**
+
 1. Verify component directories are at plugin root, NOT in `.claude-plugin/`
    - ✅ Correct: `plugins/my-plugin/commands/`
    - ❌ Wrong: `plugins/my-plugin/.claude-plugin/commands/`
@@ -524,6 +579,7 @@ See `templates/skill-readme-template.md` for comprehensive template with inline 
 **Symptoms:** Hooks defined but don't run
 
 **Solutions:**
+
 1. Verify scripts are executable: `ls -la plugins/*/hooks/scripts/`
 2. Run `chmod +x` on script files
 3. Check script has valid shebang: `#!/bin/bash`
@@ -536,6 +592,7 @@ See `templates/skill-readme-template.md` for comprehensive template with inline 
 **Symptoms:** Paths not resolving, file not found errors
 
 **Solutions:**
+
 1. Use `${CLAUDE_PLUGIN_ROOT}` not `./` or hardcoded paths
 2. Don't use `~` or `$HOME` in plugin configs
 3. Verify variable syntax: `${VAR}` not `$VAR`
@@ -547,6 +604,7 @@ See `templates/skill-readme-template.md` for comprehensive template with inline 
 **Symptoms:** JSON/YAML errors, OpenSpec validation fails
 
 **Solutions:**
+
 ```bash
 # Validate JSON
 jq empty file.json

@@ -13,6 +13,7 @@ This skill provides an interactive, guided workflow for creating new Claude Code
 ## When Claude Should Use This Skill
 
 Automatically invoke this skill when the user:
+
 - Says "create a plugin", "new plugin", "make a plugin"
 - Says "setup plugin", "initialize plugin", "scaffold plugin"
 - Wants to "add a command", "add a skill", "add an agent"
@@ -25,6 +26,7 @@ Automatically invoke this skill when the user:
 **For comprehensive educational content, refer users to**: `plugins/plugin-dev/skills/plugin-setup/README.md`
 
 README contains:
+
 - Educational Insights (component structure, skill descriptions, path variables, hooks, security)
 - Implementation Details (template adaptation, validation strategy, marketplace integration)
 - Performance Notes (token efficiency, validation performance)
@@ -50,6 +52,7 @@ This skill follows a 6-phase workflow:
 Use the AskUserQuestion tool to gather all necessary information:
 
 ### Question 1: Plugin Name
+
 ```
 Question: "What should we name your plugin?"
 Header: "Plugin Name"
@@ -63,12 +66,15 @@ Instructions:
 ```
 
 Validate the name:
+
 - Check if plugin already exists: `ls plugins/[name]`
 - Ensure kebab-case format: only lowercase, numbers, hyphens
 - If invalid, ask again with specific feedback
 
 ### Question 2: Plugin Metadata
+
 Ask for:
+
 - **Description**: Clear, concise description of plugin purpose
 - **Author Name**: Plugin author's name
 - **Author Email**: Contact email
@@ -77,6 +83,7 @@ Ask for:
 - **Keywords**: Array of search keywords (comma-separated)
 
 ### Question 3: Component Selection
+
 ```
 Question: "Which components would you like to include?"
 Header: "Components"
@@ -96,6 +103,7 @@ Store selected components for Phase 2.
 ## Phase 2: Create Plugin Structure
 
 ### Step 2.1: Create Base Directories
+
 ```bash
 mkdir -p plugins/[plugin-name]/.claude-plugin
 ```
@@ -103,11 +111,13 @@ mkdir -p plugins/[plugin-name]/.claude-plugin
 ### Step 2.2: Generate plugin.json
 
 Read the starter-plugin manifest as reference:
+
 ```bash
-Read: /Users/shawnsandy/devbox/claude-code/plugins/starter-plugin/.claude-plugin/plugin.json
+Read: plugins/starter-plugin/.claude-plugin/plugin.json
 ```
 
 Create plugin.json with gathered metadata:
+
 ```json
 {
   "name": "[plugin-name]",
@@ -130,7 +140,7 @@ Write to: `plugins/[plugin-name]/.claude-plugin/plugin.json`
 
 For each selected component type, create appropriate structure:
 
-#### If "Commands" Selected:
+#### If "Commands" Selected
 
 1. Create directory: `mkdir -p plugins/[plugin-name]/commands`
 2. Read starter template: `plugins/starter-plugin/commands/example.md`
@@ -142,7 +152,7 @@ For each selected component type, create appropriate structure:
    - Add usage examples relevant to this command
 4. Write to: `plugins/[plugin-name]/commands/example-command.md`
 
-#### If "Skills" Selected:
+#### If "Skills" Selected
 
 1. Create directory: `mkdir -p plugins/[plugin-name]/skills/example-skill`
 2. Read starter template: `plugins/starter-plugin/skills/example-skill/SKILL.md`
@@ -157,11 +167,13 @@ For each selected component type, create appropriate structure:
 **Optional README for Skills:**
 
 Use AskUserQuestion to ask: "Would you like to include a README.md for this skill?"
+
 - Options: "Yes - Include comprehensive README.md" or "No - SKILL.md only"
 - Recommended for: Complex skills with multiple features or configuration
 - Simple skills may not need separate README
 
 If "Yes" selected:
+
 1. Read README template: `templates/skill-readme-template.md` or `plugins/plugin-dev/skills/plugin-setup/README.md` as reference
 2. Adapt README with:
    - Skill overview and activation triggers
@@ -172,7 +184,7 @@ If "Yes" selected:
    - Version history
 3. Write to: `plugins/[plugin-name]/skills/example-skill/README.md`
 
-#### If "Agents" Selected:
+#### If "Agents" Selected
 
 1. Create directory: `mkdir -p plugins/[plugin-name]/agents`
 2. Read starter template: `plugins/starter-plugin/agents/example-agent.md`
@@ -186,7 +198,7 @@ If "Yes" selected:
    - Add completion criteria and report format
 4. Write to: `plugins/[plugin-name]/agents/example-agent.md`
 
-#### If "Hooks" Selected:
+#### If "Hooks" Selected
 
 1. Create directory: `mkdir -p plugins/[plugin-name]/hooks/scripts`
 2. Read starter templates:
@@ -207,7 +219,7 @@ If "Yes" selected:
 6. Write to: `plugins/[plugin-name]/hooks/scripts/[hook-name].sh`
 7. Make executable: `chmod +x plugins/[plugin-name]/hooks/scripts/*.sh`
 
-#### If "MCP Servers" Selected:
+#### If "MCP Servers" Selected
 
 1. Read starter template: `plugins/starter-plugin/.mcp.json`
 2. Adapt .mcp.json with:
@@ -228,11 +240,13 @@ If "Yes" selected:
 ## Phase 3: Update Marketplace Catalog
 
 Read the current marketplace catalog:
+
 ```bash
 Read: .claude-plugin/marketplace.json
 ```
 
 Parse the JSON and add new plugin entry to the "plugins" array:
+
 ```json
 {
   "name": "[plugin-name]",
@@ -251,6 +265,7 @@ Write updated marketplace.json back to: `.claude-plugin/marketplace.json`
 ## Phase 4: Update Documentation
 
 Read the current README.md:
+
 ```bash
 Read: README.md
 ```
@@ -271,7 +286,7 @@ Find the "Available Plugins" section and add new plugin documentation:
 
 **Installation:**
 \`\`\`bash
-/plugin marketplace add shawnsandy/claude-code
+/plugin marketplace add shawn-sandy/claude-code
 /plugin install [plugin-name]@claude-code-marketplace
 \`\`\`
 
@@ -288,6 +303,7 @@ Write updated README.md back to: `README.md`
 Run validation checks to ensure plugin is properly configured:
 
 ### Validation 5.1: JSON Syntax
+
 ```bash
 # Validate marketplace.json
 jq empty .claude-plugin/marketplace.json
@@ -305,7 +321,9 @@ jq empty plugins/[plugin-name]/.mcp.json
 If any JSON validation fails, show error and fix the syntax.
 
 ### Validation 5.2: YAML Frontmatter
+
 For each component with frontmatter (commands, skills, agents):
+
 - Read the file
 - Check that YAML frontmatter is properly formatted
 - Verify required fields are present:
@@ -314,7 +332,9 @@ For each component with frontmatter (commands, skills, agents):
   - Agents: `name`, `description` (both required)
 
 ### Validation 5.3: Hook Scripts
+
 If hooks included:
+
 ```bash
 # Verify scripts are executable
 ls -la plugins/[plugin-name]/hooks/scripts/
@@ -327,20 +347,26 @@ bash -n plugins/[plugin-name]/hooks/scripts/*.sh
 ```
 
 ### Validation 5.4: Directory Structure
+
 Verify:
+
 - Components are at plugin root, NOT in `.claude-plugin/`
 - Correct: `plugins/[name]/commands/`
 - Incorrect: `plugins/[name]/.claude-plugin/commands/`
 
 ### Validation 5.5: Naming Conventions
+
 Verify all names use kebab-case:
+
 - Plugin name
 - Command filenames (without .md)
 - Skill directory names
 - Agent filenames (without .md)
 
 ### Validation 5.6: Path Variables
+
 Check that all paths use `${CLAUDE_PLUGIN_ROOT}`:
+
 - In hooks.json
 - In .mcp.json
 - No hardcoded absolute paths
@@ -360,7 +386,7 @@ Your plugin has been created successfully! Here's how to test it:
 
 ### 1. Add Marketplace Locally
 \`\`\`bash
-/plugin marketplace add /Users/shawnsandy/devbox/claude-code
+/plugin marketplace add /Users/shawn-sandy/devbox/claude-code
 \`\`\`
 
 ### 2. Verify Marketplace
@@ -434,17 +460,21 @@ Your plugin files are located at:
 ## Important Notes
 
 ### Error Handling
+
 - If plugin already exists, ask user to choose different name or add to existing
 - If invalid name format, explain kebab-case requirement and ask again
 - If JSON validation fails, show error and fix syntax automatically
 - If hook scripts not executable, run `chmod +x` automatically
 
 ### Educational Guidance
+
 - For detailed insights on component structure, skill descriptions, path variables, hooks, and security, refer users to the comprehensive README.md
 - README contains: Educational Insights, Implementation Details, Performance Notes sections
 
 ### Reference Files
+
 Always consult these reference implementations:
+
 - `plugins/starter-plugin/` - Complete working examples
 - `.claude-plugin/marketplace.json` - Marketplace structure
 - `CLAUDE.md` - Project conventions and patterns
